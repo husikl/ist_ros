@@ -1,4 +1,4 @@
-# Interactive Sementation
+# Interactive Segmentation_and_Tracking ROS
 Fozilov Khusniddin, Yutaro Yamada
 
 [Paper](https://www.mdpi.com/1424-8220/23/24/9865)
@@ -179,4 +179,3 @@ DOI = {10.3390/s23249865}
 }
 
 ```
-# interactive_segmentation_and_tracking_ros
