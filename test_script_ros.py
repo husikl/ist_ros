@@ -33,7 +33,7 @@ class ResourceHandler:
         self.lock = threading.Lock()
         self.image_to_process = None
         self.masks_result = None
-        self.circles_result = None
+        self.center_points = None
         self.tk_root = tk_root
         self.masks_queue = masks_queue
         self.circles_queue = circles_queue
@@ -46,7 +46,7 @@ class ResourceHandler:
                     self.init_segmentation(image)
                 elif command == "infer_masks":
                     self.infer_masks(image)
-            rospy.sleep(1.0/65.0) # camera fps
+            rospy.sleep(1.0/100.0) # camera fps
 
     def init_segmentation(self, image):
         with self.lock:
@@ -57,9 +57,9 @@ class ResourceHandler:
 
     def infer_masks(self, image):
         with self.lock:
-            self.masks_result, self.circles_result = inference_masks(image, res_manager,ros=True) 
+            self.masks_result, self.center_points = inference_masks(image, res_manager,ros=True) 
             self.masks_queue.put(self.masks_result)
-            self.circles_queue.put(self.circles_result)
+            self.circles_queue.put(self.center_points)
 
 class ImageProcessor:
     def __init__(self, command_queue, masks_queue, circles_queue, input_topic, resize_scale=1.0, x0_crop=None, x1_crop=None, y0_crop=None, y1_crop=None):
@@ -129,29 +129,34 @@ class ImageProcessor:
 
                     # Wait for the result to be put into the queue
 
-                    # Publish masks
-                    masks_result = self.masks_queue.get()
-                    self.masks_pub.publish(self.numpy_converter(masks_result))
+                    
 
                     # Publish tool positions
                     # Sort keys to maintain a consistent order
-                    circles_result = self.circles_queue.get()
+                    center_points = self.circles_queue.get()
                     circles_msg.poses.clear()
-                    for key, value in circles_result.items():
+                    for key, value in center_points.items():
                         p = Pose()
-                        if value[2] != 0:  # Check if the object was detected
+                        if value[2] is True:  # Check if the object was detected
                             x, y = value[0], value[1]
                             if self.flag_resize_image or self.flag_crop_image:
                                 x, y = self.map_coordinates_to_original((x, y))
                             p.position.x = x
                             p.position.y = y
-                            p.position.z = value[2]*self.scale
+                            # p.position.z = value[2]*self.scale
+                            #  send the detected object id
                             p.orientation.x = key
                         else:
+                            # do not need this? 
                             p.orientation.x = -key
                         circles_msg.poses.append(p)
                     circles_msg.header.stamp = rospy.Time.from_sec(time.time())
                     self.detected_tools_pub.publish(circles_msg)
+
+                    # Publish masks
+                    masks_result = self.masks_queue.get()
+                    self.masks_pub.publish(self.numpy_converter(masks_result))
+                    
                     self.latest_image = None  # Clear the latest image
 
             rospy.sleep(1.0 / 65.0) # camera fps

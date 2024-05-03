@@ -15,22 +15,23 @@ from functools import partial
 from configs.get_args import parse_args
 from utils import get_color, add_masks_to_image
 class ToolTip:
-    def __init__(self, x, y, r, id, resize_scale_x, resize_scale_y, resize_scale_r, x0, y0, gamma=1.0, flag_resize_image=False, flag_crop_image=False):
+    def __init__(self, x, y, r, id, resize_scale_x, resize_scale_y, resize_scale_r, x0, y0, flag_resize_image=False, flag_crop_image=False):
         if flag_resize_image or flag_crop_image:
-            x, y, r = self.map_coordinates_to_resized(x,y,r, resize_scale_x, resize_scale_y, resize_scale_r, x0, y0)
-        self.x, self.y, self.r, self.gamma = x, y, r, gamma
+            x, y = self.map_coordinates_to_resized(x,y,r, resize_scale_x, resize_scale_y, resize_scale_r, x0, y0)
+        self.x, self.y = x, y
         self.id = id
 
     def map_coordinates_to_resized(self, x_ori, y_ori, r_ori, resize_scale_x, resize_scale_y, resize_scale_r, x0, y0):
         x_resized = (x_ori-x0) / resize_scale_x
         y_resized = (y_ori-y0) / resize_scale_y
-        r_resized = r_ori / resize_scale_r
-        return x_resized, y_resized, r_resized
+        # r_resized = r_ori / resize_scale_r
+        return x_resized, y_resized #, r_resized
     
 class MaskProcessor:
-    def __init__(self, input_topic, resize_scale, x0_crop=None, x1_crop=None, y0_crop=None, y1_crop=None, mask_mode=True, circle_mode=False):
+    def __init__(self, input_topic, resize_scale, x0_crop=None, x1_crop=None, y0_crop=None, y1_crop=None, mask_threshold=220, mask_mode=True, circle_mode=False):
         self.mask_mode = mask_mode
         self.circle_mode = circle_mode
+        self.mask_threshold = mask_threshold
         self.bridge = CvBridge()
         self.init = False
         self.masks = None
@@ -116,7 +117,7 @@ class MaskProcessor:
                 try:
                     if self.mask_mode and self.masks is not None:
                         try:
-                            vis_image = add_masks_to_image(vis_image, self.masks)
+                            vis_image = add_masks_to_image(vis_image, self.masks, threshold=self.mask_threshold)
                         except:
                             raise ValueError("Set the same way to preprocess as the image processor when masking")                            
                     if self.circle_mode:
@@ -126,7 +127,7 @@ class MaskProcessor:
                                 cv2.circle(
                                     vis_image,
                                     (int(tip.x), int(tip.y)),
-                                    int(tip.r),
+                                    int(10),
                                     color,
                                     1,
                                 )                        
@@ -165,7 +166,7 @@ class MaskProcessor:
                     self.resize_scale_x = original_image.shape[1] / new_dims[0]
                     self.resize_scale_y = original_image.shape[0] / new_dims[1]
                 self.tooltip = partial(ToolTip, resize_scale_x=self.resize_scale_x, resize_scale_y=self.resize_scale_y, resize_scale_r=self.resize_scale_r,
-                x0=self.x0, y0=self.y0, gamma=1.0,
+                x0=self.x0, y0=self.y0,
                 flag_resize_image=self.flag_resize_image,flag_crop_image=self.flag_crop_image)                    
                 self.init = True
 
@@ -182,6 +183,6 @@ if __name__ == "__main__":
         camera = yaml.safe_load(yml)    
     rospy.init_node("mask_processor_node", anonymous=False)
     # Initialize MaskProcessor
-    mask_processor = MaskProcessor(args.input_topic, camera["resize_scale"], camera["x0_crop"], camera["x1_crop"], camera["y0_crop"], camera["y1_crop"], mask_mode=args.mask_mode, circle_mode=args.circle_mode)
+    mask_processor = MaskProcessor(args.input_topic, camera["resize_scale"], camera["x0_crop"], camera["x1_crop"], camera["y0_crop"], camera["y1_crop"],mask_threshold=args.mask_threshold, mask_mode=args.mask_mode, circle_mode=args.circle_mode)
 
     rospy.spin()

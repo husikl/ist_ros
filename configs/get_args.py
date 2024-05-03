@@ -9,7 +9,7 @@ def parse_args():
     parser.add_argument('--output_path', type=str, default='./outputs/videos/out_test_video2.mp4',
                         help='Path to the output video file')
     parser.add_argument('--mask_threshold', type=int, default=220,
-                       help='Threshold value for applying the mask (0-255). Pixels with values greater than this threshold will be masked.')
+                        help='Threshold value for applying the mask (0-255). Pixels with values greater than this threshold will be masked.')
     # version with ROS
     parser.add_argument('--input_topic', type=str, default='/ximea_cam/image_raw',
                         help='Topic name to subscribe to')
