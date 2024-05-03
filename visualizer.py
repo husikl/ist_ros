@@ -14,23 +14,22 @@ from std_msgs.msg import Float32MultiArray
 from functools import partial
 from configs.get_args import parse_args
 from utils import get_color, add_masks_to_image
-class ToolTip:
-    def __init__(self, x, y, r, id, resize_scale_x, resize_scale_y, resize_scale_r, x0, y0, flag_resize_image=False, flag_crop_image=False):
+class TargetPosition:
+    def __init__(self, x, y, id, resize_scale_x, resize_scale_y, x0, y0, flag_resize_image=False, flag_crop_image=False):
         if flag_resize_image or flag_crop_image:
-            x, y = self.map_coordinates_to_resized(x,y,r, resize_scale_x, resize_scale_y, resize_scale_r, x0, y0)
+            x, y = self.map_coordinates_to_resized(x,y,resize_scale_x, resize_scale_y, x0, y0)
         self.x, self.y = x, y
         self.id = id
 
-    def map_coordinates_to_resized(self, x_ori, y_ori, r_ori, resize_scale_x, resize_scale_y, resize_scale_r, x0, y0):
+    def map_coordinates_to_resized(self, x_ori, y_ori, resize_scale_x, resize_scale_y, x0, y0):
         x_resized = (x_ori-x0) / resize_scale_x
         y_resized = (y_ori-y0) / resize_scale_y
-        # r_resized = r_ori / resize_scale_r
-        return x_resized, y_resized #, r_resized
+        return x_resized, y_resized
     
 class MaskProcessor:
-    def __init__(self, input_topic, resize_scale, x0_crop=None, x1_crop=None, y0_crop=None, y1_crop=None, mask_threshold=220, mask_mode=True, circle_mode=False):
+    def __init__(self, input_topic, resize_scale, x0_crop=None, x1_crop=None, y0_crop=None, y1_crop=None, mask_threshold=220, mask_mode=True, point_mode=False):
         self.mask_mode = mask_mode
-        self.circle_mode = circle_mode
+        self.point_mode = point_mode
         self.mask_threshold = mask_threshold
         self.bridge = CvBridge()
         self.init = False
@@ -44,7 +43,6 @@ class MaskProcessor:
             self.flag_resize_image = False
             self.resize_scale_x = 1
             self.resize_scale_y = 1
-        self.resize_scale_r = 3.0
         self.resize_scale = resize_scale
         crop_coordinates = [x0_crop,x1_crop,y0_crop,y1_crop]
         if all([a is not None for a in crop_coordinates]):
@@ -61,7 +59,7 @@ class MaskProcessor:
             self.x1 = 0
             self.y0 = 0
             self.y1 = 0
-        self.tooltip = None                
+        self.targetpositon = None                
         self.image_sub = rospy.Subscriber(
             input_topic, ImageMsg, self.image_callback
         )
@@ -70,45 +68,30 @@ class MaskProcessor:
             self.masks_sub = rospy.Subscriber(
                 "masks", Float32MultiArray, self.masks_callback
             )
-        if circle_mode:
-            self.tips = []            
+        if point_mode:
+            self.targets = []            
             self.tools_sub = rospy.Subscriber(
-                "tracked_tools", PoseArray, self.tools_callback
+                "tracked_targets", PoseArray, self.targets_callback
             )
             # self.multi_tips = defaultdict(deque)
-        print(f"Mask mode: {mask_mode}, Circle mode: {circle_mode}")
+        print(f"Mask mode: {mask_mode}, Point mode: {point_mode}")
         threading.Thread(target=self.visualize_image).start()
         rospy.sleep(1.0)
         rospy.loginfo("Visualizer initialized")
 
-    def tools_callback(self, msg):
+    def targets_callback(self, msg):
         if self.init:
-            tips = [None] * len(msg.poses)  # Pre-allocate list with None
+            targets = [None] * len(msg.poses)  # Pre-allocate list with None
             for i, p in enumerate(msg.poses):
                 if p.orientation.x > 0:  # Tool is detected
-                    tip = self.tooltip(p.position.x, p.position.y, p.position.z, i)
-                    tips[i] = tip  # Place the tip at the corresponding index
+                    target = self.targetpositon(p.position.x, p.position.y, i)
+                    targets[i] = target  # Place the target at the corresponding index
 
-                    # can I remove this process?
-                    # if i not in self.multi_tips:
-                    #     self.multi_tips[i] = deque(maxlen=10)
-                    # self.multi_tips[i].append(tip)
-                    # # Create a temporary variable to store x, y positions for averaging
-                    # temp_tips_positions = [np.array([t.x, t.y]) for t in self.multi_tips[i]]
-
-                    # # Compute the mean of the positions
-                    # mean_tip_position = np.mean(temp_tips_positions, axis=0)
-
-                    # # Update the SurgTip object's x and y with the mean values
-                    # # tip.x, tip.y = mean_tip_position[0], mean_tip_position[1]
-
-                    # # Place the tip at the corresponding index
-                    # tips[i] = tip  
                 else :
-                    tips[i] = None
+                    targets[i] = None
                     # print("not detected i = ", i)
 
-            self.tips = tips  # Directly assign, keeping None for undetected tools
+            self.targets = targets  # Directly assign, keeping None for undetected tools
 
     def visualize_image(self):
         while True:
@@ -120,13 +103,13 @@ class MaskProcessor:
                             vis_image = add_masks_to_image(vis_image, self.masks, threshold=self.mask_threshold)
                         except:
                             raise ValueError("Set the same way to preprocess as the image processor when masking")                            
-                    if self.circle_mode:
-                        for i, tip in enumerate(self.tips):
-                            if tip is not None:  # Check if the tip is detected
+                    if self.point_mode:
+                        for i, target in enumerate(self.targets):
+                            if target is not None:  # Check if the tip is detected
                                 color = get_color(i,bgr=True)
                                 cv2.circle(
                                     vis_image,
-                                    (int(tip.x), int(tip.y)),
+                                    (int(target.x), int(target.y)),
                                     int(10),
                                     color,
                                     1,
@@ -165,7 +148,7 @@ class MaskProcessor:
                 if self.flag_resize_image:
                     self.resize_scale_x = original_image.shape[1] / new_dims[0]
                     self.resize_scale_y = original_image.shape[0] / new_dims[1]
-                self.tooltip = partial(ToolTip, resize_scale_x=self.resize_scale_x, resize_scale_y=self.resize_scale_y, resize_scale_r=self.resize_scale_r,
+                self.targetpositon = partial(TargetPosition, resize_scale_x=self.resize_scale_x, resize_scale_y=self.resize_scale_y,
                 x0=self.x0, y0=self.y0,
                 flag_resize_image=self.flag_resize_image,flag_crop_image=self.flag_crop_image)                    
                 self.init = True
@@ -183,6 +166,6 @@ if __name__ == "__main__":
         camera = yaml.safe_load(yml)    
     rospy.init_node("mask_processor_node", anonymous=False)
     # Initialize MaskProcessor
-    mask_processor = MaskProcessor(args.input_topic, camera["resize_scale"], camera["x0_crop"], camera["x1_crop"], camera["y0_crop"], camera["y1_crop"],mask_threshold=args.mask_threshold, mask_mode=args.mask_mode, circle_mode=args.circle_mode)
+    mask_processor = MaskProcessor(args.input_topic, camera["resize_scale"], camera["x0_crop"], camera["x1_crop"], camera["y0_crop"], camera["y1_crop"],mask_threshold=args.mask_threshold, mask_mode=args.mask_mode, point_mode=args.point_mode)
 
     rospy.spin()

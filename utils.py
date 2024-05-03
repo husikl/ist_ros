@@ -10,10 +10,10 @@ def get_color(index, bgr=False):
         color.reverse()
     return color
 
-def add_masks_to_image(image, masks, bgr=True):
+def add_masks_to_image(image, masks, bgr=True, threshold=100):
     colored_mask = np.zeros_like(image)
     for i, mask_image in enumerate(masks):
         color = np.array(get_color(i,bgr=bgr), dtype=np.uint8)
-        colored_mask = np.where(mask_image[..., None], color, colored_mask)
+        colored_mask = np.where(mask_image[..., None]>threshold, color, colored_mask)
     masked_image = cv2.addWeighted(image, 0.8, colored_mask, 0.5, 0)
     return masked_image

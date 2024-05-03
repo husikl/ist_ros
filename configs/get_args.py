@@ -49,7 +49,7 @@ def parse_args():
     xmem_group.add_argument('--xmem.diable_long_term', action='store_false',dest='xmem.enable_long_term')
     xmem_group.add_argument('--xmem.diable_long_term_count_usage', action='store_false',dest='xmem.enable_long_term_count_usage')
     visualizer_group = parser.add_argument_group('Visualizer')
-    visualizer_group.add_argument('--circle_mode', action='store_true')
+    visualizer_group.add_argument('--point_mode', action='store_true')
     visualizer_group.add_argument('--disable_mask_mode', action='store_false',
                                   dest='mask_mode')
 

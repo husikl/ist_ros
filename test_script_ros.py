@@ -23,7 +23,7 @@ class ResourceHandler:
         interact_control,
         tk_root,
         masks_queue,
-        circles_queue
+        centers_queue
     ):
         self.command_queue = command_queue
         self.initial_image = initial_image
@@ -36,7 +36,7 @@ class ResourceHandler:
         self.center_points = None
         self.tk_root = tk_root
         self.masks_queue = masks_queue
-        self.circles_queue = circles_queue
+        self.centers_queue = centers_queue
        
     def process_commands(self):
         while True:
@@ -59,15 +59,15 @@ class ResourceHandler:
         with self.lock:
             self.masks_result, self.center_points = inference_masks(image, res_manager,ros=True) 
             self.masks_queue.put(self.masks_result)
-            self.circles_queue.put(self.center_points)
+            self.centers_queue.put(self.center_points)
 
 class ImageProcessor:
-    def __init__(self, command_queue, masks_queue, circles_queue, input_topic, resize_scale=1.0, x0_crop=None, x1_crop=None, y0_crop=None, y1_crop=None):
+    def __init__(self, command_queue, masks_queue, centers_queue, input_topic, resize_scale=1.0, x0_crop=None, x1_crop=None, y0_crop=None, y1_crop=None):
         self.command_queue = command_queue
         self.bridge = CvBridge()
         self.latest_image = None
         self.masks_queue = masks_queue
-        self.circles_queue = circles_queue
+        self.centers_queue = centers_queue
         self.processing_enabled = False
         self.init_segmentation_done = False
         if resize_scale!=1:
@@ -104,8 +104,8 @@ class ImageProcessor:
         self.inference_service = rospy.Service(
             "run_inference", Empty, self.run_inference_service
         )
-        self.detected_tools_pub = rospy.Publisher(
-            "tracked_tools", PoseArray, queue_size=1
+        self.detected_targets_pub = rospy.Publisher(
+            "tracked_targets", PoseArray, queue_size=1
         )
         self.masks_pub = rospy.Publisher(
             "masks", Float32MultiArray, queue_size=1
@@ -119,7 +119,7 @@ class ImageProcessor:
         rospy.loginfo("init completed...")
 
     def process_images(self):
-        circles_msg = PoseArray()
+        centers_msg = PoseArray()
         header = Header()
         
         while True:
@@ -133,8 +133,8 @@ class ImageProcessor:
 
                     # Publish tool positions
                     # Sort keys to maintain a consistent order
-                    center_points = self.circles_queue.get()
-                    circles_msg.poses.clear()
+                    center_points = self.centers_queue.get()
+                    centers_msg.poses.clear()
                     for key, value in center_points.items():
                         p = Pose()
                         if value[2] is True:  # Check if the object was detected
@@ -149,9 +149,9 @@ class ImageProcessor:
                         else:
                             # do not need this? 
                             p.orientation.x = -key
-                        circles_msg.poses.append(p)
-                    circles_msg.header.stamp = rospy.Time.from_sec(time.time())
-                    self.detected_tools_pub.publish(circles_msg)
+                        centers_msg.poses.append(p)
+                    centers_msg.header.stamp = rospy.Time.from_sec(time.time())
+                    self.detected_targets_pub.publish(centers_msg)
 
                     # Publish masks
                     masks_result = self.masks_queue.get()
@@ -224,10 +224,10 @@ if __name__ == "__main__":
 
     command_queue = Queue()
     masks_queue = Queue()
-    circles_queue = Queue()
+    centers_queue = Queue()
 
     # Initialize ImageProcessor
-    image_processor = ImageProcessor(command_queue, masks_queue, circles_queue, args.input_topic, camera["resize_scale"], camera["x0_crop"], camera["x1_crop"], camera["y0_crop"], camera["y1_crop"])
+    image_processor = ImageProcessor(command_queue, masks_queue, centers_queue, args.input_topic, camera["resize_scale"], camera["x0_crop"], camera["x1_crop"], camera["y0_crop"], camera["y1_crop"])
 
     # Wait until an initial image is collected
     image_processor.initial_image_collected.wait()
@@ -242,7 +242,7 @@ if __name__ == "__main__":
         interact_control,
         tk_root,
         masks_queue,
-        circles_queue
+        centers_queue
     )
 
     resource_thread = threading.Thread(target=resource_handler.process_commands)
