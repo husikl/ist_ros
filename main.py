@@ -20,7 +20,7 @@ import math
 def get_mask_center(mask):
     n_obj = mask.shape[0]
     # create a dictionory to store the 2d pixel position of the mask center and detected true/false variable
-    mask_cal_idv = {}
+    mask_cal_idv = []
     # image_height, image_width = mask[0].shape[:2]
     # image_center = np.array([image_width / 2, image_height / 2])
     for idx in range(n_obj):
@@ -73,14 +73,14 @@ def get_mask_center(mask):
             # # mask_cal_idv[f"{idx+1}"] = (tip[0], tip[1], 10, cX, cY)
             
             # assign value to the dictionary the pixel position and detected = True
-            mask_cal_idv[idx+1] = (cX, cY, True)
+            mask_cal_idv.append([cX, cY, True])
             # mask_cal_idv[f"{idx+1}"] = (cX, cY, 10,  cX, cY)
             # else:
             #     mask_cal_idv[f"{idx+1}"] = (0, 0, 0, 0, 0)
         else:
             # assign value to the dictionary the pixel position and detected = False
-            mask_cal_idv[idx+1] = (0, 0, False)
-            
+            mask_cal_idv.append([0, 0, False])
+    mask_cal_idv = np.array(mask_cal_idv,dtype=np.float32)
     return mask_cal_idv
 
 def build_control(args):

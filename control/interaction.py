@@ -160,7 +160,7 @@ class interaction_control:
             self.tk_root = tk_root  # Update the stored Tk root
         if not self.tk_root:
             raise ValueError("Tk root must be initialized.")
-        self.tk_root.title("Tool Selection")
+        self.tk_root.title("Target Selection")
         if image is not None:
             self.image = image
         elif not self.image_queue.empty():
@@ -180,18 +180,23 @@ class interaction_control:
             self.image_id = self.canvas.create_image(0, 0, anchor=tk.NW, image=self.photo)  # Display original image
         button_frame = tk.Frame(self.tk_root)
         button_frame.pack(pady=10)
+        button_bg_color = "#616161"
+        button_fg_color = "#FFFFFF"
+        button_active_bg_color = "#424242"
+        button_active_fg_color = "#FFFFFF"
+
         mask_button = tk.Button(button_frame, text="Generate Masks", command=self.predict_masks,
-                                width=15, height=2, font=("Helvetica", 12), bg="blue", fg="white",
-                                activebackground="darkblue", activeforeground="white")
+                                width=15, height=2, font=("Helvetica", 12), bg=button_bg_color, fg=button_fg_color,
+                                activebackground=button_active_bg_color, activeforeground=button_active_fg_color)
         mask_button.pack(side=tk.LEFT, padx=10, pady=5)
 
         reset_button = tk.Button(button_frame, text="Reselect", command=self.reset,
-                                width=15, height=2, font=("Helvetica", 12), bg="red", fg="white",
-                                activebackground="darkred", activeforeground="white")
+                                width=15, height=2, font=("Helvetica", 12), bg=button_bg_color, fg=button_fg_color,
+                                activebackground=button_active_bg_color, activeforeground=button_active_fg_color)
         reset_button.pack(side=tk.LEFT, padx=10, pady=5)
 
         self.track_pressed = 0
-        track_button = tk.Button(button_frame, text="Apply Selection", command=self.tracking,
+        track_button = tk.Button(button_frame, text="Start Tracking", command=self.tracking,
                                 width=15, height=2, font=("Helvetica", 12), bg="green", fg="white",
                                 activebackground="darkgreen", activeforeground="white")
         track_button.pack(side=tk.LEFT, padx=10, pady=5)

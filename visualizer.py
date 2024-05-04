@@ -71,7 +71,7 @@ class MaskProcessor:
         if point_mode:
             self.targets = []            
             self.tools_sub = rospy.Subscriber(
-                "tracked_targets", PoseArray, self.targets_callback
+                "tracked_targets", Float32MultiArray, self.targets_callback
             )
             # self.multi_tips = defaultdict(deque)
         print(f"Mask mode: {mask_mode}, Point mode: {point_mode}")
@@ -81,16 +81,22 @@ class MaskProcessor:
 
     def targets_callback(self, msg):
         if self.init:
-            targets = [None] * len(msg.poses)  # Pre-allocate list with None
-            for i, p in enumerate(msg.poses):
-                if p.orientation.x > 0:  # Tool is detected
-                    target = self.targetpositon(p.position.x, p.position.y, i)
-                    targets[i] = target  # Place the target at the corresponding index
-
-                else :
+            dims = tuple(map(lambda x: x.size, msg.layout.dim))
+            msg_np = np.array(msg.data, dtype=float).reshape(dims).astype(np.float32)
+            targets = [None] * msg_np.shape[0]  # Pre-allocate list with None
+            for i, p in enumerate(msg_np):
+                if bool(p[2]):
+                    targets[i] = self.targetpositon(p[0], p[1], i)
+                else:
                     targets[i] = None
-                    # print("not detected i = ", i)
+            # for i, p in enumerate(msg.poses):
+            #     if p.orientation.x > 0:  # Tool is detected
+            #         target = self.targetpositon(p.position.x, p.position.y, i)
+            #         targets[i] = target  # Place the target at the corresponding index
 
+            #     else :
+            #         targets[i] = None
+            #         # print("not detected i = ", i)
             self.targets = targets  # Directly assign, keeping None for undetected tools
 
     def visualize_image(self):

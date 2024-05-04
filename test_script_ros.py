@@ -11,6 +11,7 @@ from std_srvs.srv import Empty
 from cv_bridge import CvBridge, CvBridgeError
 from geometry_msgs.msg import PoseArray, Pose
 import tkinter as tk
+import numpy as np
 from configs.get_args import parse_args
 from main import build_control, init_interactive_segmentation, inference_masks
 
@@ -70,6 +71,7 @@ class ImageProcessor:
         self.centers_queue = centers_queue
         self.processing_enabled = False
         self.init_segmentation_done = False
+        self.np_map_coordinates_to_original = np.frompyfunc(self.map_coordinates_to_original, 3, 3)
         if resize_scale!=1:
             self.flag_resize_image = True
             self.resize_scale_x = None
@@ -104,9 +106,12 @@ class ImageProcessor:
         self.inference_service = rospy.Service(
             "run_inference", Empty, self.run_inference_service
         )
+        # self.detected_targets_pub = rospy.Publisher(
+        #     "tracked_targets", PoseArray, queue_size=1
+        # )
         self.detected_targets_pub = rospy.Publisher(
-            "tracked_targets", PoseArray, queue_size=1
-        )
+            "tracked_targets", Float32MultiArray, queue_size=1
+        )        
         self.masks_pub = rospy.Publisher(
             "masks", Float32MultiArray, queue_size=1
         )                  
@@ -128,47 +133,46 @@ class ImageProcessor:
                     self.command_queue.put(("infer_masks", self.latest_image))
 
                     # Wait for the result to be put into the queue
-
-                    
-
                     # Publish tool positions
                     # Sort keys to maintain a consistent order
                     center_points = self.centers_queue.get()
-                    centers_msg.poses.clear()
-                    for key, value in center_points.items():
-                        p = Pose()
-                        if value[2] is True:  # Check if the object was detected
-                            x, y = value[0], value[1]
-                            if self.flag_resize_image or self.flag_crop_image:
-                                x, y = self.map_coordinates_to_original((x, y))
-                            p.position.x = x
-                            p.position.y = y
-                            # p.position.z = value[2]*self.scale
-                            #  send the detected object id
-                            p.orientation.x = key
-                        else:
-                            # do not need this? 
-                            p.orientation.x = -key
-                        centers_msg.poses.append(p)
-                    centers_msg.header.stamp = rospy.Time.from_sec(time.time())
-                    self.detected_targets_pub.publish(centers_msg)
+                    center_points = self.np_map_coordinates_to_original(center_points[:,0],center_points[:,1],center_points[:,2])
+                    center_points = np.array(center_points).T
+                    self.detected_targets_pub.publish(self.numpy_converter_centers(center_points))
+                    
+                    # centers_msg.poses.clear()
+                    # for key, value in center_points.items():
+                    #     p = Pose()
+                    #     if value[2] is True:  # Check if the object was detected
+                    #         x, y = value[0], value[1]
+                    #         if self.flag_resize_image or self.flag_crop_image:
+                    #             x, y = self.map_coordinates_to_original((x, y))
+                    #         p.position.x = x
+                    #         p.position.y = y
+                    #         # p.position.z = value[2]*self.scale
+                    #         #  send the detected object id
+                    #         p.orientation.x = key
+                    #     else:
+                    #         # do not need this? 
+                    #         p.orientation.x = -key
+                    #     centers_msg.poses.append(p)
+                    # centers_msg.header.stamp = rospy.Time.from_sec(time.time())
+                    # self.detected_targets_pub.publish(centers_msg)
 
                     # Publish masks
                     masks_result = self.masks_queue.get()
-                    self.masks_pub.publish(self.numpy_converter(masks_result))
+                    self.masks_pub.publish(self.numpy_converter_masks(masks_result))
                     
                     self.latest_image = None  # Clear the latest image
 
             rospy.sleep(1.0 / 65.0) # camera fps
     
-    def map_coordinates_to_original(self, coordinates):
-        x, y = coordinates
+    def map_coordinates_to_original(self, x, y, detected):
         x_original = x * self.resize_scale_x + self.x0
         y_original = y * self.resize_scale_y + self.y0
-
-        return x_original, y_original
+        return x_original, y_original, detected
         
-    def numpy_converter(self, np_masks):
+    def numpy_converter_masks(self, np_masks):
         num_masks, h, w = np_masks.shape
         mask_msg = Float32MultiArray()
         mask_msg.layout.dim = [
@@ -179,6 +183,16 @@ class ImageProcessor:
         mask_msg.data = np_masks.flatten().tolist()
         return mask_msg
 
+    def numpy_converter_centers(self, np_centers):
+        num_obj, c = np_centers.shape
+        center_msg = Float32MultiArray()
+        center_msg.layout.dim = [
+            MultiArrayDimension(label="num_obj", size=num_obj, stride=c),
+            MultiArrayDimension(label="center", size=c, stride=1)
+        ]
+        center_msg.data = np_centers.flatten().tolist()
+        return center_msg
+    
     def image_callback(self, msg):
         try:
             original_image = self.bridge.imgmsg_to_cv2(msg, "rgb8")
