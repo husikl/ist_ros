@@ -52,7 +52,8 @@ def parse_args():
     visualizer_group.add_argument('--point_mode', action='store_true')
     visualizer_group.add_argument('--disable_mask_mode', action='store_false',
                                   dest='mask_mode')
-
+    visualizer_group.add_argument('--center_radius',type=int,default=5,
+                                  help='Radius of circle to attach to targets')
     return parser.parse_args()
 
 def get_group_args(args, group_name):

@@ -27,7 +27,7 @@ class TargetPosition:
         return x_resized, y_resized
     
 class MaskProcessor:
-    def __init__(self, input_topic, resize_scale, x0_crop=None, x1_crop=None, y0_crop=None, y1_crop=None, mask_threshold=220, mask_mode=True, point_mode=False):
+    def __init__(self, input_topic, resize_scale, x0_crop=None, x1_crop=None, y0_crop=None, y1_crop=None, mask_threshold=220, mask_mode=True, point_mode=False, center_radius=5):
         self.mask_mode = mask_mode
         self.point_mode = point_mode
         self.mask_threshold = mask_threshold
@@ -71,6 +71,7 @@ class MaskProcessor:
             )
         if point_mode:
             self.targets = []            
+            self.center_radius = center_radius
             self.tools_sub = rospy.Subscriber(
                 "tracked_targets", Float32MultiArray, self.targets_callback
             )
@@ -113,13 +114,16 @@ class MaskProcessor:
                     if self.point_mode:
                         for i, target in enumerate(self.targets):
                             if target is not None:  # Check if the tip is detected
-                                color = get_color(i,bgr=True)
+                                if self.mask_mode:
+                                    color = [0,0,255]
+                                else:
+                                    color = get_color(i,bgr=True)
                                 cv2.circle(
                                     vis_image,
                                     (int(target.x), int(target.y)),
-                                    int(10),
+                                    int(self.center_radius),
                                     color,
-                                    1,
+                                    thickness=-1,
                                 )                        
                     self.image_pub.publish(self.bridge.cv2_to_imgmsg(vis_image, "bgr8"))
                     rospy.sleep(1.0 / 30.0)
@@ -173,6 +177,6 @@ if __name__ == "__main__":
         camera = yaml.safe_load(yml)    
     rospy.init_node("mask_processor_node", anonymous=False)
     # Initialize MaskProcessor
-    mask_processor = MaskProcessor(args.input_topic, camera["resize_scale"], camera["x0_crop"], camera["x1_crop"], camera["y0_crop"], camera["y1_crop"],mask_threshold=args.mask_threshold, mask_mode=args.mask_mode, point_mode=args.point_mode)
+    mask_processor = MaskProcessor(args.input_topic, camera["resize_scale"], camera["x0_crop"], camera["x1_crop"], camera["y0_crop"], camera["y1_crop"],mask_threshold=args.mask_threshold, mask_mode=args.mask_mode, point_mode=args.point_mode, center_radius=args.center_radius)
 
     rospy.spin()
