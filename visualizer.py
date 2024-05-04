@@ -72,7 +72,7 @@ class MaskProcessor:
         if point_mode:
             self.targets = []            
             self.center_radius = center_radius
-            self.tools_sub = rospy.Subscriber(
+            self.targets_sub = rospy.Subscriber(
                 "tracked_targets", Float32MultiArray, self.targets_callback
             )
             # self.multi_tips = defaultdict(deque)
@@ -91,15 +91,7 @@ class MaskProcessor:
                     targets[i] = self.targetpositon(p[0], p[1], i)
                 else:
                     targets[i] = None
-            # for i, p in enumerate(msg.poses):
-            #     if p.orientation.x > 0:  # Tool is detected
-            #         target = self.targetpositon(p.position.x, p.position.y, i)
-            #         targets[i] = target  # Place the target at the corresponding index
-
-            #     else :
-            #         targets[i] = None
-            #         # print("not detected i = ", i)
-            self.targets = targets  # Directly assign, keeping None for undetected tools
+            self.targets = targets  # Directly assign, keeping None for undetected targets
 
     def visualize_image(self):
         while True:

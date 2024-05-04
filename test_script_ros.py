@@ -132,7 +132,7 @@ class ImageProcessor:
                     self.command_queue.put(("infer_masks", self.latest_image))
 
                     # Wait for the result to be put into the queue
-                    # Publish tool positions
+                    # Publish target positions
                     center_points = self.centers_queue.get()
                     center_points = self.np_map_coordinates_to_original(center_points[:,0],center_points[:,1],center_points[:,2])
                     center_points = np.array(center_points).T

@@ -66,16 +66,16 @@ check and create the final requirements.txt and test the build and running.
 Create a Installation.md, RunWithROS.md, RunWithoutROS.md and add instructions for each.
 
 ## Getting Started
-This project includes code for offline video masking and online publishing of masks and tool positions.
+This project includes code for offline video masking and online publishing of masks and target positions.
 
 ### Offline Segmentation
 To perform offline video masking, run the following command:
 ```
 python test_script.py --input_path ./inputs/input_video.mp4 --output_path ./outputs/output_video.mp4
 ```
-First, tkinter pop up. Please select the target tools.
+First, tkinter pop up. Please select the targets.
 
-1.  Select the tools by both points and boxes
+1.  Select the targets by both points and boxes
     * Draw box by mouse drag 
     * Point out object by right click
 1. Push "Generate masks" button, then masked image is displayed
@@ -85,26 +85,26 @@ After pushing "Apply Selection", masking process starts.
 
 The execution result will be saved in mp4 format at the specified output path.
 
-### Online Tool Segmentation and Tracking with ROS
+### Online Segmentation and Tracking with ROS
 #### Publishing
-First, run the following command to start the ROS node for online tool masking and tracking:
+First, run the following command to start the ROS node for online masking and tracking:
 ```
 python test_script_ros.py --input_topic /ximea_cam/image_raw
 ```
 A blank Tkinter window will pop up.
 
-Next, start tool selection in another terminal:
+Next, start target selection in another terminal:
 ```
 rosservice call /init_segmentation "{}"
 ```
-After the tool selection, start processing:
+After the target selection, start processing:
 ```
 rosservice call /run_inference "{}"
 ```
-Then, tool masks and positions are being published.
+Then, masks and positions are being published.
 
 #### Visualizing
-We provide two way to visualize: maked image and images with circles pointing out the positions of the tracked tool.
+We provide two way to visualize: maked image and images with circles pointing out the positions of the tracked targets.
 
 Run the following command to start the ROS node that subscribes to the results from "test_script_ros.py" and visualizes them:
 ```
@@ -114,7 +114,7 @@ You can visualize the images in two ways by specifying command-line arguments:
 1. Masked image (default)
 * This is the default visualization mode. To disable it, add the "--disable_mask_mode" argument when running "visualizer.py".
 2. Image with circles
-* You can visualize the positions of the tracked tool by adding the "--circle_mode" argument when running "visualizer.py". This mode displays circles at the tracked tool positions.
+* You can visualize the positions of the tracked target by adding the "--circle_mode" argument when running "visualizer.py". This mode displays circles at the tracked target positions.
 For example, to run the visualizer with circle mode enabled, use the following command:
 ```
 python visualizer.py --circle_mode
@@ -127,10 +127,10 @@ We can visualize image in 2 ways:
 1. Masked image (default)
     * Set as default. To disable, put command "--disable_mask_mode" after "python visualizer.py"
 1. Image with circles
-    * We can visualize the positions of the tracked tool by commend "--circle_mode"
+    * We can visualize the positions of the tracked target by commend "--circle_mode"
 
 ## Demo
-### Tool selection through Graphic User Interface
+### Target selection through Graphic User Interface
 
 
 
@@ -138,14 +138,14 @@ https://github.com/Yutaro88/interactive_segmentation/assets/165972021/1207495b-7
 
 
 
-### Offline tool masking
+### Offline target masking
 
 Pick and Place:
 
 https://github.com/Yutaro88/interactive_segmentation/assets/165972021/f195f3a7-0011-4c72-8527-cd5d12a89af4
 
 
-### Online tool masking
+### Online target masking
 ![Online tool masking](assets/online_tool_masking.mp4)
 
 ## Citation
