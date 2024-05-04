@@ -48,12 +48,14 @@ def parse_args():
                             help='Resize the shorter side to this size. -1 to use original resolution. 480 for default')
     xmem_group.add_argument('--xmem.diable_long_term', action='store_false',dest='xmem.enable_long_term')
     xmem_group.add_argument('--xmem.diable_long_term_count_usage', action='store_false',dest='xmem.enable_long_term_count_usage')
-    visualizer_group = parser.add_argument_group('Visualizer')
-    visualizer_group.add_argument('--point_mode', action='store_true')
-    visualizer_group.add_argument('--disable_mask_mode', action='store_false',
+    visualization_group = parser.add_argument_group('Visualization')
+    visualization_group.add_argument('--point_mode', action='store_true')
+    visualization_group.add_argument('--disable_mask_mode', action='store_false',
                                   dest='mask_mode')
-    visualizer_group.add_argument('--center_radius',type=int,default=5,
+    visualization_group.add_argument('--center_radius',type=int,default=5,
                                   help='Radius of circle to attach to targets')
+    visualization_group.add_argument('--save_all_mode', action='store_true')
+    visualization_group.add_argument('--save_all_path', type=str, default='./outputs/data/out_test_video2')
     return parser.parse_args()
 
 def get_group_args(args, group_name):

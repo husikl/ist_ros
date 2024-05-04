@@ -110,7 +110,7 @@ def init_interactive_segmentation(image, res_manager, interact_control, tk_root=
     
     return masks
 
-def inference_masks(image, res_manager, ros=False, debug=False):
+def inference_masks(image, res_manager, debug=False, save_mode=False):
     if debug:
         assert isinstance(image, np.ndarray)
         assert image.shape[2] == 3
@@ -118,14 +118,15 @@ def inference_masks(image, res_manager, ros=False, debug=False):
     
     res_manager.set_image(image)
     masks = res_manager.step(mask=None)
-    
-    # Only convert to CPU and numpy array once
-    # Ignore the first image that include all masks
-    send_masks = masks[1:].cpu().numpy()
-    if ros:
+    if save_mode is False:
+        # Only convert to CPU and numpy array once
+        # Ignore the first image that include all masks
+        send_masks = masks[1:].cpu().numpy()
         masks_center_point = get_mask_center(send_masks)
         send_masks = (send_masks * 255).astype(np.uint8)
-        return send_masks, masks_center_point
     else:
+        # to save the first image as well
+        send_masks = masks.cpu().numpy()
+        masks_center_point = get_mask_center(send_masks[1:])
         send_masks = (send_masks * 255).astype(np.uint8)
-        return send_masks
+    return send_masks, masks_center_point

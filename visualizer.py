@@ -105,7 +105,7 @@ class MaskProcessor:
                             raise ValueError("Set the same way to preprocess as the image processor when masking")                            
                     if self.point_mode:
                         for i, target in enumerate(self.targets):
-                            if target is not None:  # Check if the tip is detected
+                            if target is not None:  # Check if the target is detected
                                 if self.mask_mode:
                                     color = [0,0,255]
                                 else:

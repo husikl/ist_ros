@@ -58,7 +58,7 @@ class ResourceHandler:
 
     def infer_masks(self, image):
         with self.lock:
-            self.masks_result, self.center_points = inference_masks(image, res_manager,ros=True) 
+            self.masks_result, self.center_points = inference_masks(image, res_manager) 
             self.masks_queue.put(self.masks_result)
             self.centers_queue.put(self.center_points)
 
