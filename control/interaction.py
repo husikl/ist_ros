@@ -4,8 +4,8 @@ import torch
 import numpy as np
 import cv2
 from queue import Queue
-from tkinter import IntVar
-import time
+import rospy
+from std_srvs.srv import Empty
 from utils import add_masks_to_image
 class interaction_control:
     def __init__(self, sam=None, image=None):
@@ -155,7 +155,7 @@ class interaction_control:
         else:
             return photo_x, photo_y
 
-    def do_interact(self, image=None, tk_root=None):
+    def do_interact(self, image=None, tk_root=None, ros=False):
         if tk_root:  # If a new Tk root is provided
             self.tk_root = tk_root  # Update the stored Tk root
         if not self.tk_root:
@@ -203,6 +203,14 @@ class interaction_control:
         while not self.track_pressed:
             self.tk_root.update()
             self.tk_root.after(10)
+        #Selection completed
+        if ros:
+            rospy.wait_for_service('run_inference')
+            try:
+                start_inference = rospy.ServiceProxy('run_inference', Empty)
+                start_inference()
+            except rospy.ServiceException as e:
+                print("Service call failed: %s"%e)
 
-        print("Tool selection completed")
+        print("Start tracking")
         return self.masks

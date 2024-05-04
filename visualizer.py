@@ -13,7 +13,7 @@ from math import sqrt
 from std_msgs.msg import Float32MultiArray
 from functools import partial
 from configs.get_args import parse_args
-from utils import get_color, add_masks_to_image
+from utils import get_color, add_masks_to_image_resize
 class TargetPosition:
     def __init__(self, x, y, id, resize_scale_x, resize_scale_y, x0, y0, flag_resize_image=False, flag_crop_image=False):
         if flag_resize_image or flag_crop_image:
@@ -59,6 +59,7 @@ class MaskProcessor:
             self.x1 = 0
             self.y0 = 0
             self.y1 = 0
+        self.add_masks_to_image = partial(add_masks_to_image_resize, x0=self.x0, x1=self.x1, y0=self.y0, y1=self.y1, resize_scale=self.resize_scale, flag_crop_image=self.flag_crop_image, flag_resize_image=self.flag_resize_image, bgr=True, threshold=self.mask_threshold)
         self.targetpositon = None                
         self.image_sub = rospy.Subscriber(
             input_topic, ImageMsg, self.image_callback
@@ -106,7 +107,7 @@ class MaskProcessor:
                 try:
                     if self.mask_mode and self.masks is not None:
                         try:
-                            vis_image = add_masks_to_image(vis_image, self.masks, threshold=self.mask_threshold)
+                            vis_image = self.add_masks_to_image(vis_image, self.masks)
                         except:
                             raise ValueError("Set the same way to preprocess as the image processor when masking")                            
                     if self.point_mode:

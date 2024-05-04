@@ -94,13 +94,13 @@ def build_control(args):
     return res_manager, interact_control
 
 
-def init_interactive_segmentation(image, res_manager, interact_control, tk_root=None, debug=False):
+def init_interactive_segmentation(image, res_manager, interact_control, tk_root=None, ros=False, debug=False):
     if debug:
         assert isinstance(image, np.ndarray)
         assert image.shape[2] == 3
         assert len(image.shape) == 3
 
-    masks = interact_control.do_interact(Image.fromarray(image), tk_root)
+    masks = interact_control.do_interact(Image.fromarray(image), tk_root,ros=ros)
     if debug:
         print("got masks from sam...")
 

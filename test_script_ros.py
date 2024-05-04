@@ -53,7 +53,7 @@ class ResourceHandler:
         with self.lock:
             interact_control.image_queue.put(image)
             init_interactive_segmentation(
-                image, res_manager, interact_control, self.tk_root
+                image, res_manager, interact_control, self.tk_root,ros=True
             )
 
     def infer_masks(self, image):
@@ -71,7 +71,8 @@ class ImageProcessor:
         self.centers_queue = centers_queue
         self.processing_enabled = False
         self.init_segmentation_done = False
-        self.np_map_coordinates_to_original = np.frompyfunc(self.map_coordinates_to_original, 3, 3)
+        self.original_w = None
+        self.original_h = None
         if resize_scale!=1:
             self.flag_resize_image = True
             self.resize_scale_x = None
@@ -95,7 +96,8 @@ class ImageProcessor:
             self.x0 = 0
             self.x1 = 0
             self.y0 = 0
-            self.y1 = 0        
+            self.y1 = 0
+        self.np_map_coordinates_to_original = np.frompyfunc(self.map_coordinates_to_original, 3, 3)                    
         self.initial_image_collected = threading.Event()
         self.image_sub = rospy.Subscriber(
             input_topic, ImageMsg, self.image_callback
@@ -124,9 +126,6 @@ class ImageProcessor:
         rospy.loginfo("init completed...")
 
     def process_images(self):
-        centers_msg = PoseArray()
-        header = Header()
-        
         while True:
             with self.lock:
                 if (self.processing_enabled and self.init_segmentation_done and self.latest_image is not None):
@@ -134,30 +133,10 @@ class ImageProcessor:
 
                     # Wait for the result to be put into the queue
                     # Publish tool positions
-                    # Sort keys to maintain a consistent order
                     center_points = self.centers_queue.get()
                     center_points = self.np_map_coordinates_to_original(center_points[:,0],center_points[:,1],center_points[:,2])
                     center_points = np.array(center_points).T
                     self.detected_targets_pub.publish(self.numpy_converter_centers(center_points))
-                    
-                    # centers_msg.poses.clear()
-                    # for key, value in center_points.items():
-                    #     p = Pose()
-                    #     if value[2] is True:  # Check if the object was detected
-                    #         x, y = value[0], value[1]
-                    #         if self.flag_resize_image or self.flag_crop_image:
-                    #             x, y = self.map_coordinates_to_original((x, y))
-                    #         p.position.x = x
-                    #         p.position.y = y
-                    #         # p.position.z = value[2]*self.scale
-                    #         #  send the detected object id
-                    #         p.orientation.x = key
-                    #     else:
-                    #         # do not need this? 
-                    #         p.orientation.x = -key
-                    #     centers_msg.poses.append(p)
-                    # centers_msg.header.stamp = rospy.Time.from_sec(time.time())
-                    # self.detected_targets_pub.publish(centers_msg)
 
                     # Publish masks
                     masks_result = self.masks_queue.get()
@@ -168,22 +147,58 @@ class ImageProcessor:
             rospy.sleep(1.0 / 65.0) # camera fps
     
     def map_coordinates_to_original(self, x, y, detected):
+        """
+        Map the position calculated from the masks to the position in the original image
+        x: w, y: h
+        """
         x_original = x * self.resize_scale_x + self.x0
         y_original = y * self.resize_scale_y + self.y0
         return x_original, y_original, detected
+
+    def map_mask_to_original(self, masks_np):
+        """
+        Convert the generated masks back to their original size
+        masks_np: num_obj*h*w
+        output: num_obj*h*w
+        """
+        restored_masks = []
+        original_size = (int(masks_np.shape[2] * self.resize_scale_x), int(masks_np.shape[1]*self.resize_scale_y))
+        for mask in masks_np:
+            if self.flag_resize_image:
+                restored_mask = cv2.resize(mask, original_size, interpolation=cv2.INTER_NEAREST)
+            else:
+                restored_mask = mask
+            if self.flag_crop_image:
+                # Create a new mask with the size of the original image
+                original_mask = np.zeros((self.original_h, self.original_w), dtype=mask.dtype)
+                # Place the restored mask at the cropped position
+                original_mask[self.y0:self.y1, self.x0:self.x1] = restored_mask
+                restored_mask = original_mask
+            restored_masks.append(restored_mask)
+        restored_masks = np.array(restored_masks, dtype=masks_np.dtype)
+        return restored_masks
         
-    def numpy_converter_masks(self, np_masks):
-        num_masks, h, w = np_masks.shape
+    def numpy_converter_masks(self, masks_np):
+        """
+        Convert the numpy array of masks to MultiArray
+        """
+        #If you want to speed up the process, comment out here and send the resized masks. In that case, you need to revise visualizer
+        if self.flag_resize_image or self.flag_crop_image:
+            masks_np = self.map_mask_to_original(masks_np)
+        num_masks, h, w = masks_np.shape
         mask_msg = Float32MultiArray()
         mask_msg.layout.dim = [
             MultiArrayDimension(label="num_masks", size=num_masks, stride=h*w),
             MultiArrayDimension(label="height", size=h, stride=w),
             MultiArrayDimension(label="width", size=w, stride=1)
         ]
-        mask_msg.data = np_masks.flatten().tolist()
+        mask_msg.data = masks_np.flatten().tolist()
         return mask_msg
 
     def numpy_converter_centers(self, np_centers):
+        """
+        Convert the numpy array of center positions to MultiArray
+        """        
         num_obj, c = np_centers.shape
         center_msg = Float32MultiArray()
         center_msg.layout.dim = [
@@ -194,21 +209,28 @@ class ImageProcessor:
         return center_msg
     
     def image_callback(self, msg):
+        """
+        original_image: h*w*c (y*x*c)
+        """
         try:
             original_image = self.bridge.imgmsg_to_cv2(msg, "rgb8")
             if self.flag_crop_image:
-                original_image = original_image[self.y0:self.y1,self.x0:self.x1]
+                cropped_image = original_image[self.y0:self.y1,self.x0:self.x1]
+            else:
+                cropped_image = original_image
             if self.flag_resize_image:
                 # Resize the extracted image to speed up detections
-                new_dims = (original_image.shape[1] // self.resize_scale, original_image.shape[0] // self.resize_scale)
-                self.latest_image = cv2.resize(original_image, new_dims)
+                new_dims = (cropped_image.shape[1] // self.resize_scale, cropped_image.shape[0] // self.resize_scale)
+                self.latest_image = cv2.resize(cropped_image, new_dims)
             else:
-                self.latest_image = original_image
+                self.latest_image = cropped_image
 
             if not self.initial_image_collected.is_set():
+                self.original_w = original_image.shape[1]
+                self.original_h = original_image.shape[0]
                 if self.flag_resize_image:
-                    self.resize_scale_x = original_image.shape[1] / new_dims[0]
-                    self.resize_scale_y = original_image.shape[0] / new_dims[1]
+                    self.resize_scale_x = cropped_image.shape[1] / new_dims[0]
+                    self.resize_scale_y = cropped_image.shape[0] / new_dims[1]
                 self.initial_image = self.latest_image
                 self.initial_image_collected.set()
         except CvBridgeError as e:
@@ -223,8 +245,6 @@ class ImageProcessor:
         if not self.init_segmentation_done:
             print("Initialization not done. Ignoring start request.")
             return []
-        else:
-            print("Tool tracking start")
         self.processing_enabled = not self.processing_enabled  # Toggle processing
         return []
 
