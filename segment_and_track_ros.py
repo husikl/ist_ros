@@ -13,7 +13,7 @@ from geometry_msgs.msg import PoseArray, Pose
 import tkinter as tk
 import numpy as np
 from configs.get_args import parse_args
-from main import build_control, init_interactive_segmentation, inference_masks
+from utils.core_utils import build_control, init_interactive_segmentation, inference_masks
 
 class ResourceHandler:
     def __init__(

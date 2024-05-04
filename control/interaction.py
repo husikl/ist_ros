@@ -6,7 +6,7 @@ import cv2
 from queue import Queue
 import rospy
 from std_srvs.srv import Empty
-from utils import add_masks_to_image
+from utils.utils import add_masks_to_image
 class interaction_control:
     def __init__(self, sam=None, image=None):
         self.sam = sam

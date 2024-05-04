@@ -21,8 +21,6 @@ def get_mask_center(mask):
     n_obj = mask.shape[0]
     # create a dictionory to store the 2d pixel position of the mask center and detected true/false variable
     mask_cal_idv = []
-    # image_height, image_width = mask[0].shape[:2]
-    # image_center = np.array([image_width / 2, image_height / 2])
     for idx in range(n_obj):
         single_mask = mask[idx]
         
@@ -37,9 +35,6 @@ def get_mask_center(mask):
         thresh = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel)  # Erosion followed by dilation (removes noise)
         thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)  # Dilation followed by erosion (closes small holes)
 
-        # # Now proceed with contour extraction
-        # contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
         # Calculate mass center
         M = cv2.moments(thresh)
         m00 = M["m00"]
@@ -47,36 +42,8 @@ def get_mask_center(mask):
         if m00 != 0:
             m10, m01 = M["m10"], M["m01"]
             cX, cY = int(m10 / m00), int(m01 / m00)
-            # centroid_array = np.array([cX, cY])
-            # radius = int(math.sqrt(m00 / math.pi))
-            
-            # # Filter contours that include the centroid
-            # valid_contours = [cnt for cnt in contours if cv2.pointPolygonTest(cnt, (cX, cY), False) >= 0]
-            
-            # # if valid_contours:
-            # max_contour = max(contours, key=cv2.contourArea)
-            # # hull = cv2.convexHull(max_contour)
-            # rect = cv2.minAreaRect(max_contour)
-            # box = np.int0(cv2.boxPoints(rect))
-            # max_dist, pt1, pt2 = 0, None, None
-            # for i in range(4):
-            #     for j in range(i+1, 4):
-            #         dist = np.linalg.norm(box[i] - box[j])
-            #         if dist > max_dist:
-            #             max_dist, pt1, pt2 = dist, box[i], box[j]
-            
-            
-            # tip = pt1 if np.linalg.norm(image_center - pt1) < np.linalg.norm(image_center - pt2) else pt2
-            # # farthest_point = max(hull, key=lambda x: cv2.norm(np.array([cX, cY]) - x[0]))
-
-            # # tip = farthest_point[0]
-            # # mask_cal_idv[f"{idx+1}"] = (tip[0], tip[1], 10, cX, cY)
-            
             # assign value to the dictionary the pixel position and detected = True
             mask_cal_idv.append([cX, cY, True])
-            # mask_cal_idv[f"{idx+1}"] = (cX, cY, 10,  cX, cY)
-            # else:
-            #     mask_cal_idv[f"{idx+1}"] = (0, 0, 0, 0, 0)
         else:
             # assign value to the dictionary the pixel position and detected = False
             mask_cal_idv.append([0, 0, False])

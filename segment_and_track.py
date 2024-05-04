@@ -3,14 +3,14 @@ import time
 import threading
 from queue import Queue
 import tkinter as tk
-from main import build_control, init_interactive_segmentation, inference_masks
+from utils.core_utils import build_control, init_interactive_segmentation, inference_masks
 import numpy as np
 from tqdm import tqdm
 import os
 import pandas as pd
 from PIL import Image
 from configs.get_args import parse_args
-from utils import add_masks_to_image, get_color
+from utils.utils import add_masks_to_image, get_color
 class ResourceHandler:
     def __init__(
         self,

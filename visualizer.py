@@ -13,7 +13,7 @@ from math import sqrt
 from std_msgs.msg import Float32MultiArray
 from functools import partial
 from configs.get_args import parse_args
-from utils import get_color, add_masks_to_image_resize
+from utils.utils import get_color, add_masks_to_image_resize
 class TargetPosition:
     def __init__(self, x, y, id, resize_scale_x, resize_scale_y, x0, y0, flag_resize_image=False, flag_crop_image=False):
         if flag_resize_image or flag_crop_image:
