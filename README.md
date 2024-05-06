@@ -132,18 +132,15 @@ We can visualize image in 2 ways:
 ## Demo
 ### Target selection through Graphic User Interface
 
-
-
-https://github.com/Yutaro88/interactive_segmentation/assets/165972021/1207495b-76c9-4e37-88a6-72d9a72bf1a6
-
-
+![Target selection](assets/target_selection.gif)
 
 ### Offline target masking
-
-Pick and Place:
-
-https://github.com/Yutaro88/interactive_segmentation/assets/165972021/f195f3a7-0011-4c72-8527-cd5d12a89af4
-
+<p float="left">
+  <img alt="pick_and_place" src="assets/pick_and_place_combined.gif?raw=true" width="96.5%" />
+  <img alt="micromanipulation" src="assets/micromanipulation_combined.gif?raw=true" width="96.5%" />  
+  <img alt="boxing" src="assets/boxing_combined.gif?raw=true" width="96.5%" />
+  <img alt="sheep" src="assets/sheep_combined.gif?raw=true" width="96.5%" />
+</p>
 
 ### Online target masking
 ![Online tool masking](assets/online_tool_masking.mp4)

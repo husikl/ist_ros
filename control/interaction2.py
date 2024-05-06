@@ -6,7 +6,7 @@ import cv2
 from queue import Queue
 import rospy
 from std_srvs.srv import Empty
-from utils.utils import add_mask_to_image_index, add_masks_to_image
+from utils.utils import add_masks_to_image
 
 class interaction_control:
     def __init__(self, sam=None, image=None):
@@ -137,7 +137,7 @@ class interaction_control:
         self.masks_array.append(mask_image)
         # Display the masked image
         current_image_np = np.array(self.image)
-        masked_image = add_masks_to_image(current_image_np, self.masks_array)        
+        masked_image = add_masks_to_image(current_image_np, self.masks_array,bgr=False)        
         masked_image_pil = Image.fromarray(masked_image)
         self.mask_photo = ImageTk.PhotoImage(self.resize_image(masked_image_pil))
         self.canvas.itemconfig(self.image_id, image=self.mask_photo)
@@ -206,7 +206,7 @@ class interaction_control:
                     self.mask_photo = self.photo
                 else:                
                     current_image_np = np.array(self.image)
-                    masked_image = add_masks_to_image(current_image_np, self.masks_array)        
+                    masked_image = add_masks_to_image(current_image_np, self.masks_array,bgr=False)        
                     masked_image_pil = Image.fromarray(masked_image)
                     self.mask_photo = ImageTk.PhotoImage(self.resize_image(masked_image_pil))
             else:

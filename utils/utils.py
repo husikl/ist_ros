@@ -9,9 +9,9 @@ def get_color(index, bgr=False, cmap_name='tab10', color_order=None):
     To change color map or color order, set cmap_name and color_order
     """
     cmap = plt.get_cmap(cmap_name)
-    colors = cmap.colors
     
     if color_order is not None:
+        colors = cmap.colors
         colors = [colors[i] for i in color_order]
         cmap = matplotlib.colors.ListedColormap(colors)
     
