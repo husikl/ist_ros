@@ -40,6 +40,7 @@ class ResourceHandler:
         self.center_radius = center_radius
         self.save_all_mode = save_all_mode
         self.save_all_path = save_all_path
+        print(f"Mask mode: {mask_mode}, Point mode: {point_mode}, Save all mode: {save_all_mode}")        
        
     def process_commands(self):
         while True:
@@ -76,8 +77,8 @@ class ResourceHandler:
             ret, frame = cap.read()
             if not ret:
                 break
-            if frame_id > 10:
-                break
+            # if frame_id > 10:
+            #     break
             masks, center_points = inference_masks(cv2.cvtColor(frame,cv2.COLOR_BGR2RGB), res_manager,save_mode=self.save_all_mode)
             
             # Save all information
@@ -90,12 +91,12 @@ class ResourceHandler:
                     if self.mask_mode:
                         os.makedirs(f"{self.save_all_path}/mask_all",exist_ok=True)
                 if self.mask_mode:
-                    Image.fromarray(masks[0]).save(f"{self.save_all_path}/mask_all/mask_all_{frame_id:06}.png")
+                    Image.fromarray(masks[0]).save(f"{self.save_all_path}/mask_all/mask_all_{frame_id:06}.jpg")
                 frame_df = pd.DataFrame() # for point mode
                 frame_df["frame_id"] = [frame_id]
                 for target_id, (mask,center) in enumerate(zip(masks[1:], center_points),start=1):
                     if self.mask_mode:
-                        Image.fromarray(mask).save(f"{self.save_all_path}/mask_target{target_id}/mask_target{target_id}_{frame_id:06}.png")
+                        Image.fromarray(mask).save(f"{self.save_all_path}/mask_target{target_id}/mask_target{target_id}_{frame_id:06}.jpg")
                     if self.point_mode:
                         frame_df[f"center_target{target_id}"] = [center[:2]]
                         frame_df[f"detect_target{target_id}"] = [center[2]]
@@ -131,8 +132,9 @@ class ResourceHandler:
         cap.release()
         out.release()
         cv2.destroyAllWindows()
-        point_df.to_pickle(f"{self.save_all_path}/points_dataframe.pkl")
-        point_df.to_csv(f"{self.save_all_path}/points_dataframe.csv")
+        if self.point_mode and self.save_all_mode:
+            point_df.to_pickle(f"{self.save_all_path}/points_dataframe.pkl")
+            # point_df.to_csv(f"{self.save_all_path}/points_dataframe.csv")
         print("Video processing finished")
         self.tk_root.destroy()
 

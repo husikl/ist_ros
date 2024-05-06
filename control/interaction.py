@@ -80,7 +80,7 @@ class interaction_control:
             mask_image = (masks[0] * 255).astype(np.uint8)
             masks_array.append(mask_image)  # Append the mask image to masks_array
             masks = torch.from_numpy(masks).unsqueeze(0)
-            Image.fromarray(mask_image).save(f"outputs/images/mask_to_track0.png")           
+            Image.fromarray(mask_image).save(f"outputs/images/mask_to_track0.jpg")           
             print(f"{len(self.boxes)} mask generated")
         elif len(self.boxes) > 1:
             maskss = []
@@ -95,9 +95,11 @@ class interaction_control:
                         multimask_output=True,
                     )
                     maskss.append(torch.from_numpy(masks[0]).unsqueeze(0))
+                    for i, msss in enumerate(maskss):
+                        print(i, msss.size())
                     mask_image = (masks[0] * 255).astype(np.uint8)
                     masks_array.append(mask_image)  # Append the mask image to masks_array
-                    Image.fromarray(mask_image).save(f"outputs/images/mask_to_track{i}.png")
+                    Image.fromarray(mask_image).save(f"outputs/images/mask_to_track{i}.jpg")
                 print(f"{len(self.boxes)} masks generated")
 
             else:
@@ -211,6 +213,7 @@ class interaction_control:
                 start_inference()
             except rospy.ServiceException as e:
                 print("Service call failed: %s"%e)
-
+        print(self.masks.size())
         print("Start tracking")
+        assert False
         return self.masks

@@ -11,7 +11,7 @@ from segment_anything import SamPredictor, sam_model_registry
 from configs.get_args import get_group_args
 
 # ! load interaction control
-from control.interaction import interaction_control
+from control.interaction2 import interaction_control
 
 # ! load resource manager
 from control.res_manager import ResManager as resource_manager
