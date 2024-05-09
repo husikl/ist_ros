@@ -3,13 +3,8 @@ import yaml
 import cv2
 import threading
 import numpy as np
-from collections import defaultdict, deque
-from scipy.optimize import minimize
 from sensor_msgs.msg import Image as ImageMsg
-from geometry_msgs.msg import PoseArray, Point
 from cv_bridge import CvBridge, CvBridgeError
-import copy
-from math import sqrt
 from std_msgs.msg import Float32MultiArray
 from functools import partial
 from configs.get_args import parse_args

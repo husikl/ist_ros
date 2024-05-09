@@ -1,12 +1,11 @@
 import tkinter as tk
-from PIL import Image, ImageTk, ImageDraw
+from PIL import Image, ImageTk
 import torch
 import numpy as np
-import cv2
 from queue import Queue
 import rospy
 from std_srvs.srv import Empty
-from utils.utils import add_mask_to_image_index, add_masks_to_image
+from utils.utils import add_masks_to_image
 
 class interaction_control:
     def __init__(self, sam=None, image=None):
@@ -120,7 +119,6 @@ class interaction_control:
         )
         mask_image = (mask[0] * 255).astype(np.uint8)
         mask = torch.from_numpy(mask[0]).unsqueeze(0)
-        Image.fromarray(mask_image).save(f"outputs/images/mask_to_track{self.num_masks}.jpg")           
         print(f"Mask{self.num_masks} generated")
         return mask, mask_image
 

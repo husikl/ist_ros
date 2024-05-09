@@ -4,7 +4,6 @@ import threading
 from queue import Queue
 import tkinter as tk
 from utils.core_utils import build_control, init_interactive_segmentation, inference_masks
-import numpy as np
 from tqdm import tqdm
 import os
 import pandas as pd

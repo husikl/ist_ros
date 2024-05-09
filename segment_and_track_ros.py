@@ -2,14 +2,11 @@ import rospy
 import yaml
 from sensor_msgs.msg import Image as ImageMsg
 from std_msgs.msg import MultiArrayDimension, Float32MultiArray
-from std_msgs.msg import Header
 import cv2
-import time
 import threading
 from queue import Queue
 from std_srvs.srv import Empty
 from cv_bridge import CvBridge, CvBridgeError
-from geometry_msgs.msg import PoseArray, Pose
 import tkinter as tk
 import numpy as np
 from configs.get_args import parse_args
@@ -108,9 +105,6 @@ class ImageProcessor:
         self.inference_service = rospy.Service(
             "run_inference", Empty, self.run_inference_service
         )
-        # self.detected_targets_pub = rospy.Publisher(
-        #     "tracked_targets", PoseArray, queue_size=1
-        # )
         self.detected_targets_pub = rospy.Publisher(
             "tracked_targets", Float32MultiArray, queue_size=1
         )        

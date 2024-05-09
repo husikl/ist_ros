@@ -1,8 +1,7 @@
 import tkinter as tk
-from PIL import Image, ImageTk, ImageDraw
+from PIL import Image, ImageTk
 import torch
 import numpy as np
-import cv2
 from queue import Queue
 import rospy
 from std_srvs.srv import Empty
