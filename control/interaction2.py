@@ -280,7 +280,7 @@ class interaction_control:
         label_button.pack(side=tk.LEFT, padx=10, pady=5)
         self.label_button = label_button
 
-        mask_button = tk.Button(button_frame_top, text="Genetrate Mask", command=self.predict_mask,
+        mask_button = tk.Button(button_frame_top, text="Generate Mask", command=self.predict_mask,
                                 width=15, height=2, font=("Helvetica", 12), bg=button_bg_color, fg=button_fg_color,
                                 activebackground=button_active_bg_color, activeforeground=button_active_fg_color)
         mask_button.pack(side=tk.LEFT, padx=10, pady=5)
