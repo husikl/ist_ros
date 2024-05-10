@@ -131,21 +131,24 @@ We can visualize image in 2 ways:
     * We can visualize the positions of the tracked target by commend "--circle_mode"
 
 ## Demo
-### Target selection through Graphic User Interface
+### Interactive Target selection through Graphic User Interface
 
 ![Target selection](assets/target_selection.gif)
 
-### Offline target masking
+### Target segmentation and tracking
 <p float="left">
-  <img alt="pick_and_place" src="assets/pick_and_place_combined.gif?raw=true" width="96.5%" />
-  <img alt="micromanipulation" src="assets/micromanipulation_combined.gif?raw=true" width="96.5%" />  
-  <img alt="boxing" src="assets/boxing_combined.gif?raw=true" width="96.5%" />
-  <img alt="sheep" src="assets/sheep_combined.gif?raw=true" width="96.5%" />
+  <img alt="pick_and_place_gui" src="assets/pick_and_place_gui.gif?raw=true" width="55%" style="vertical-align:middle;" /> 
+  <img alt="pp" src="assets/pick_and_place_combined.gif?raw=true" width="43%" style="vertical-align:middle;" /> 
+  <img alt="micromanipulation_gui" src="assets/micromanipulation_gui.gif?raw=true" width="55%" style="vertical-align:middle;" />  
+  <img alt="micromanipulation" src="assets/micromanipulation_combined.gif?raw=true" width="43%" style="vertical-align:middle;" />
+  <img alt="boxing_gui" src="assets/boxing_gui.gif?raw=true" width="55%" style="vertical-align:middle;" />  
+  <img alt="boxing" src="assets/boxing_combined.gif?raw=true" width="43%" style="vertical-align:middle;" />     
+  <img alt="sheep_gui" src="assets/sheep_gui.gif?raw=true" width="55%" style="vertical-align:middle;" />  
+  <img alt="sheep" src="assets/sheep_combined.gif?raw=true" width="43%" style="vertical-align:middle;" />   
 </p>
 
-### Online target masking
-![Online tool masking](assets/online_tool_masking.mp4)
-
+### Multi-mode Tracking Visualization
+![Target selection](assets/pick_and_place_visualization.gif)
 ## Citation
 ```
 @Article{s23249865,

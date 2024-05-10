@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 
-color_order = [0,1,3,4,6,7,8,9,2,5]
+color_order = [0,1,3,4,6,7,8,9,2,5] # Sheep
 def get_color(index, bgr=False, cmap_name='tab10', color_order=None):
     """
     To change color map or color order, set cmap_name and color_order
