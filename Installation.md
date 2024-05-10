@@ -3,14 +3,15 @@ We need to install ROS with Anaconda to subscribe and process the images from RO
 
 ## Installation of Mamba
 It is recommended to start the installation of Mamba with a fresh miniforge installation. Please refer to the Mamba website for detailed instructions: https://mamba.readthedocs.io/en/latest/installation/mamba-installation.html
+
 Installing Mamba to an existing conda environment is not recommended. However, you can install it from the conda-forge channel. In this case, you need to install it in the base environment:
 ```
 conda install mamba -c conda-forge
 ```
 ## Instllation of Robostack
-Create new virtual environment
+Create new virtual environment. Please select a suitable version of Python (3.9+):
 ```
-mamba create -n ros_env
+mamba create -n ros_env python=3.9
 mamba activate ros_env
 ```
 
@@ -46,19 +47,21 @@ Requirements:
 - Python 3.9+
 - PyTorch 1.11+ (See PyTorch for installation instructions)
 - torchvision corresponding to the PyTorch version
+
 Install the required packages:
 ```
-pip install pandas
-pip install tqdm
+pip install pandas tqdm
 ```
 Install the Segment Anything Model:
 ```
 pip install git+https://github.com/facebookresearch/segment-anything.git
 ```
 Install the weights for SAM and XMem:
-SAM: Install from https://github.com/facebookresearch/segment-anything
+
+SAM: Download the weights from https://github.com/facebookresearch/segment-anything and place them in the appropriate directory.
+
 XMem: 
 ```
-wget -P ./saves/ https://github.com/hkchengrex/XMem/releases/download/v1.0/XMem.pth
-wget -P ./saves/ https://github.com/hkchengrex/XMem/releases/download/v1.0/XMem-s012.pth
+wget -P ./weights/ https://github.com/hkchengrex/XMem/releases/download/v1.0/XMem.pth
+wget -P ./weights/ https://github.com/hkchengrex/XMem/releases/download/v1.0/XMem-s012.pth
 ```

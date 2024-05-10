@@ -64,6 +64,7 @@ wget -P ./saves/ https://github.com/hkchengrex/XMem/releases/download/v1.0/XMem-
 ## TODO
 check and create the final requirements.txt and test the build and running.
 Create a Installation.md, RunWithROS.md, RunWithoutROS.md and add instructions for each.
+->I created these md files. Please modify the corresponding sections in this README.
 
 ## Getting Started
 This project includes code for offline video masking and online publishing of masks and target positions.

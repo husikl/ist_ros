@@ -8,6 +8,7 @@ tracking_notes.md
 inputs/
 outputs/
 .vscode/
+mp4publisher.py
 # C extensions
 *.so
 
