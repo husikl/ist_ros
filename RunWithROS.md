@@ -1,4 +1,5 @@
-This document provides a guide on how to run the ROS_IST given the image topic published by a camera sensor.
+# ROS_IST: Object Detection, Segmentation, and Tracking Using a Camera Sensor Image Topic
+This document provides a guide on how to run the ROS_IST given the image topic published as ```sensor_msgs/Image.msg``` by a camera sensor.
 First, make sure that the Anaconda environment where the ROS_IST is installed is initialized prior to running the scripts below.
 
 Next, check that ROS master is running or run the following command to start the ROS master in a terminal:
@@ -6,9 +7,7 @@ Next, check that ROS master is running or run the following command to start the
 roscore
 ```
 
-
-
-## Publishing
+## Object Detector Node
 Next, create a new terminal and run the following command to start the ROS node that will subscribe to the camera image topic:
 ```
 python segment_and_track_ros.py --input_topic /image_topic
