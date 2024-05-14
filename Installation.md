@@ -3,8 +3,7 @@ We need to install ROS with Anaconda to subscribe and process the images from RO
 
 
 ## ROS Setup
-
-It is recommended to start the installation of Mamba with a fresh miniforge installation. Please refer to the Mamba website for detailed instructions: https://mamba.readthedocs.io/en/latest/installation/mamba-installation.html
+It is recommended use Mamba with a fresh miniforge installation. Please refer to the Mamba website for detailed instructions: https://mamba.readthedocs.io/en/latest/installation/mamba-installation.html
 
 Installing Mamba to an existing conda environment is not recommended. However, you can install it from the conda-forge channel. In this case, you need to install it in the base environment:
 ```
