@@ -1,19 +1,23 @@
-# Online Segmentation and Tracking with ROS
-This document provides a detailed guide on how to perform segmentation and tracking using ROS.
-First, run the following command to start the ROS master:
+This document provides a guide on how to run the ROS_IST given the image topic published by a camera sensor.
+First, make sure that the Anaconda environment where the ROS_IST is installed is initialized prior to running the scripts below.
+
+Next, check that ROS master is running or run the following command to start the ROS master in a terminal:
 ```
 roscore
 ```
+
+
+
 ## Publishing
-Next, create a new terminal and run the following command to start the ROS node for online masking and tracking:
+Next, create a new terminal and run the following command to start the ROS node that will subscribe to the camera image topic:
 ```
 python segment_and_track_ros.py --input_topic /image_topic
 ```
 Please specify the ROS topic of the image in `--input_topic`. Additionally, you can use `--camera_param` to input a resized or cropped image to the model to speed up the process.
 
-A blank Tkinter window will pop up.
+A blank Tkinter window for GUI will pop up.
 
-Next, start target selection in another terminal:
+Next,  to initialize the GUI for target selection, initialize the rosservice in another terminal:
 ```
 rosservice call /init_segmentation "{}"
 ```
@@ -27,14 +31,22 @@ The target selection GUI will appear. Please select the targets by following thi
 1. Repeat steps 1-2 for each object you want to track.
 1. After selecting all targets, click the "Start Tracking" button to initiate the tracking process.
 
-Once tracking starts, masks and their positions will be published.
-## Visualizing
-We provide two ways to visualize the results: masked images and images with points indicating the positions of the tracked targets.
+Once tracking starts, masks and their positions will be published via /masks and /tracked_targets topics.
+You can check the output by checking in terminal, i.e.:
+```
+rostopic echo /masks
 
-Run the following command to start the ROS node that subscribes to the results from `segment_and_tracking_ros.py` and visualizes them:
+rostopic echo /tracked_targets
+```
+
+## Visualizing
+We provide two ways to visualize the results: masked images and images with points indicating the pixel positions (2D) of the tracked targets.
+
+Run the following command in a new terminal to start the ROS node that subscribes to the results from `segment_and_tracking_ros.py` and visualizes them:
 ```
 python visualizer.py
 ```
+
 You can visualize the images in two ways by specifying command-line arguments:
 1. Masked image (default)
 * This is the default visualization mode. To disable it, add the `--disable_mask_mode` argument when running `visualizer.py`.
