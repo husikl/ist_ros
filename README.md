@@ -1,4 +1,3 @@
-```
 # ROS-IST: ROS-based Interactive Segmentation and Tracking
 
 ROS-IST is a software solution that addresses the challenges of object detection and tracking in robotics and computer science applications. By combining the interactivity of Segment Anything Model with semi-supervised video object segmentation methods, ROS-IST enables flexible and efficient object segmentation and tracking in ROS-based systems.
