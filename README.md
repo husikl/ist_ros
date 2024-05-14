@@ -4,7 +4,7 @@ ROS-IST is a package fo object detection and tracking based on integration of Se
 
 ## Installation
 
-For detailed installation instructions, please refer to the [INSTALLATION.md](INSTALLATION.md) file.
+For detailed installation instructions, please refer to the [Installation.md](Installation.md) file.
 
 ## Usage
 
