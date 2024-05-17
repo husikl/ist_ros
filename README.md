@@ -1,6 +1,6 @@
 # IST-ROS: A Flexible Object Segmentation and Tracking Framework for ROS
 
-ROS-IST is a package fo object detection and tracking based on integration of Segment Anything Model with semi-supervised video object segmentation method, for flexible object segmentation and tracking in ROS-based systems.
+IST-ROS is a package fo object detection and tracking based on integration of Segment Anything Model with semi-supervised video object segmentation method, for flexible object segmentation and tracking in ROS-based systems.
 
 ## Installation
 
@@ -8,11 +8,11 @@ For detailed installation instructions, please refer to the [Installation.md](In
 
 ## Usage
 
-ROS-IST can be used with or without ROS. For examples on how to run ROS-IST, please refer to the following files:
+IST-ROS can be used with or without ROS. For examples on how to run IST-ROS, please refer to the following files:
 
 - [GUI.md](GUI.md): Instruction for using Graphical User Interface .
-- [RunWithROS.md](RunWithROS.md): Instructions for running ROS-IST with ROS.
-- [RunWithoutROS.md](RunWithoutROS.md): Instructions for running ROS-IST without ROS.
+- [RunWithROS.md](RunWithROS.md): Instructions for running IST-ROS with ROS.
+- [RunWithoutROS.md](RunWithoutROS.md): Instructions for running IST-ROS without ROS.
 
 ### Interactive Target Selection through GUI
 
