@@ -1,4 +1,4 @@
-# ROS-IST: A Flexible Object Segmentation and Tracking Framework for ROS
+# IST-ROS: A Flexible Object Segmentation and Tracking Framework for ROS
 
 ROS-IST is a package fo object detection and tracking based on integration of Segment Anything Model with semi-supervised video object segmentation method, for flexible object segmentation and tracking in ROS-based systems.
 
