@@ -1,4 +1,4 @@
-# ROS_IST: Object Detection, Segmentation, and Tracking Using a Camera Sensor Image Topic
+# Object Detection, Segmentation, and Tracking Using a Camera Sensor Image Topic
 This document provides a guide on how to run the ROS_IST given the image topic published as ```sensor_msgs/Image.msg``` by a camera sensor.
 First, make sure that the Anaconda environment where the ROS_IST is installed is initialized prior to running the scripts below.
 
