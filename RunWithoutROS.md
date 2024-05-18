@@ -1,5 +1,5 @@
-# Video Annotations and Data Collection with ROS_IST
-This document provides a guide on using ROS_IST for video annotations and data collection, using a video file in mp4 format as input. The provided script allows users to select target objects in the input video and outputs an annotated video with the selected objects segmented in each frame.
+# Video Annotations and Data Collection with IST-ROS
+This document provides a guide on using IST_ROS for video annotations and data collection, using a video file in mp4 format as input. The provided script allows users to select target objects in the input video and outputs an annotated video with the selected objects segmented in each frame.
 
 ## Basic example
 To perform video annotation, run the following command:
