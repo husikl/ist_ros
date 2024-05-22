@@ -1,11 +1,12 @@
-# Offline Segmentation and Tracking
-This document provides a detailed guide on how to perform the offline segmentation and tracking.
-## Command Line Usage
-To perform offline video processing, run the following command:
+# Video Annotations and Data Collection with IST-ROS
+This document provides a guide on using IST_ROS for video annotations and data collection, using a video file in mp4 format as input. The provided script allows users to select target objects in the input video and outputs an annotated video with the selected objects segmented in each frame.
+
+## Basic example
+To perform video annotation, run the following command:
 ```
 python segment_and_track.py --input_path ./inputs/input_video.mp4 --output_path ./outputs/output_video.mp4
 ```
-## Command Line Arguments
+## Arguments
 * `--input_path`: Path to the input video.
 * `--output_path`: Path to the output video.
 * `--point_mode`: Track the targets using points.
@@ -14,7 +15,7 @@ python segment_and_track.py --input_path ./inputs/input_video.mp4 --output_path 
 * `--save_all_path`: Path to save data when `--save_all_mode` is enabled.
 
 ## Workflow
-1. Run the scrpt with the appropriate command line arguments.
+1. Run the script with the appropriate arguments.
 1. A tkinter GUI window will appear.
 1. Select one target at a time using the following operations:
     * Draw a bounding box around the object by clicking and dragging the mouse.
@@ -22,7 +23,7 @@ python segment_and_track.py --input_path ./inputs/input_video.mp4 --output_path 
 1. Click the "Generate Masks" button to display and register the masked image. 
     * If you are not satisfied with the results, use the "Reselect" or "Clear All" button to remove them.
 1. Repeat steps 3-4 for each object you want to track.
-1. After selecting all targets, click the "Start Tracking" button to initiate the tracking process.
+1. After selecting all targets, click the "Start Tracking" button to initiate the video annotation.
 
 For detailed instructions on using the GUI, please refer to `GUI.md`.
 ## Outputs
