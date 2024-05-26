@@ -1,3 +1,0 @@
-decord
-opencv-python
-scipy
