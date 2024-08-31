@@ -23,6 +23,8 @@ IST-ROS can be used with or without ROS. For examples on how to run IST-ROS, ple
 <p float="left">
   <img alt="pick_and_place_gui" src="assets/pick_and_place_gui.gif?raw=true" width="55%" style="vertical-align:middle;" />
   <img alt="pp" src="assets/pick_and_place_combined.gif?raw=true" width="43%" style="vertical-align:middle;" />
+  <img alt="suturing_gui" src="assets/suturing_gui.gif?raw=true" width="55%" style="vertical-align:middle;" />
+  <img alt="suturing" src="assets/suturing_combined.gif?raw=true" width="43%" style="vertical-align:middle;" />
   <img alt="micromanipulation_gui" src="assets/micromanipulation_gui.gif?raw=true" width="55%" style="vertical-align:middle;" />
   <img alt="micromanipulation" src="assets/micromanipulation_combined.gif?raw=true" width="43%" style="vertical-align:middle;" />
   <img alt="boxing_gui" src="assets/boxing_gui.gif?raw=true" width="55%" style="vertical-align:middle;" />
