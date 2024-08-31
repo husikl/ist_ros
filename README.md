@@ -25,6 +25,12 @@ IST-ROS can be used with or without ROS. For examples on how to run IST-ROS, ple
   <img alt="pp" src="assets/pick_and_place_combined.gif?raw=true" width="43%" style="vertical-align:middle;" />
   <img alt="suturing_gui" src="assets/suturing_gui.gif?raw=true" width="55%" style="vertical-align:middle;" />
   <img alt="suturing" src="assets/suturing_combined.gif?raw=true" width="43%" style="vertical-align:middle;" />
+  <img alt="wallet_gui" src="assets/wallet_gui.gif?raw=true" width="55%" style="vertical-align:middle;" />
+  <img alt="wallet" src="assets/wallet_combined.gif?raw=true" width="43%" style="vertical-align:middle;" />
+  <img alt="open_gui" src="assets/open_gui.gif?raw=true" width="55%" style="vertical-align:middle;" />
+  <img alt="open" src="assets/open_combined.gif?raw=true" width="43%" style="vertical-align:middle;" />
+  <img alt="hsr_gui" src="assets/hsr_gui.gif?raw=true" width="55%" style="vertical-align:middle;" />
+  <img alt="hsr" src="assets/hsr_combined.gif?raw=true" width="43%" style="vertical-align:middle;" />
   <img alt="micromanipulation_gui" src="assets/micromanipulation_gui.gif?raw=true" width="55%" style="vertical-align:middle;" />
   <img alt="micromanipulation" src="assets/micromanipulation_combined.gif?raw=true" width="43%" style="vertical-align:middle;" />
   <img alt="boxing_gui" src="assets/boxing_gui.gif?raw=true" width="55%" style="vertical-align:middle;" />
