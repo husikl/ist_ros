@@ -29,6 +29,8 @@ IST-ROS can be used with or without ROS. For examples on how to run IST-ROS, ple
   <img alt="wallet" src="assets/wallet_combined.gif?raw=true" width="43%" style="vertical-align:middle;" />
   <img alt="open_gui" src="assets/open_gui.gif?raw=true" width="55%" style="vertical-align:middle;" />
   <img alt="open" src="assets/open_combined.gif?raw=true" width="43%" style="vertical-align:middle;" />
+  <img alt="fingers_gui" src="assets/fingers_gui.gif?raw=true" width="55%" style="vertical-align:middle;" />
+  <img alt="fingers" src="assets/fingers_combined.gif?raw=true" width="43%" style="vertical-align:middle;" />  
   <img alt="hsr_gui" src="assets/hsr_gui.gif?raw=true" width="55%" style="vertical-align:middle;" />
   <img alt="hsr" src="assets/hsr_combined.gif?raw=true" width="43%" style="vertical-align:middle;" />
   <img alt="micromanipulation_gui" src="assets/micromanipulation_gui.gif?raw=true" width="55%" style="vertical-align:middle;" />
