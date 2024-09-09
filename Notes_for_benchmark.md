@@ -13,6 +13,11 @@ Davis 2017 has single and multiple objects tracked.
  
 Using the the script with adjusted folder name :
 -  davis_evaluator.py (right now the folder name is hardcoded, changing to argument would be easier?)
+
+currently running as:
+- python davis_evaluator.py --input_path ./inputs/pick_and_place.mp4 --output_path ./outputs/videos/output_video.mp4 --save_all_mode --save_all_path  ./outputs/all_data  
+Need to remove the unneeded arguments for simplicity...
+
 load the images from the dataset (i.e. bear), select target in first image with sam, and store the masks.
     (get fps from here?)
 Next run the 
