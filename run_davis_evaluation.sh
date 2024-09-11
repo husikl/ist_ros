@@ -66,12 +66,12 @@ do
     python davis_evaluator.py --davis_year 2016 --davis_task "$folder"
 done
 
-# Run evaluator for DAVIS 2017
-echo "Evaluating DAVIS 2017..."
-for folder in "${davis_2017[@]}"
-do
-    echo "Processing $folder..."
-    python davis_evaluator.py --davis_year 2017 --davis_task "$folder"
-done
+# # Run evaluator for DAVIS 2017
+# echo "Evaluating DAVIS 2017..."
+# for folder in "${davis_2017[@]}"
+# do
+#     echo "Processing $folder..."
+#     python davis_evaluator.py --davis_year 2017 --davis_task "$folder"
+# done
 
 echo "Evaluation complete."

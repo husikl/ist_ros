@@ -85,15 +85,8 @@ def inference_masks(image, res_manager, debug=False, save_mode=False):
     
     res_manager.set_image(image)
     masks = res_manager.step(mask=None)
-    if save_mode is False:
-        # Only convert to CPU and numpy array once
-        # Ignore the first image that include all masks
-        send_masks = masks[1:].cpu().numpy()
-        masks_center_point = get_mask_center(send_masks)
-        send_masks = (send_masks * 255).astype(np.uint8)
-    else:
-        # to save the first image as well
-        send_masks = masks.cpu().numpy()
-        masks_center_point = get_mask_center(send_masks[1:])
-        send_masks = (send_masks * 255).astype(np.uint8)
-    return send_masks, masks_center_point
+
+    # Probability mask -> index mask
+    out_mask = torch.max(masks, dim=0).indices
+    out_mask = (out_mask.detach().cpu().numpy()).astype(np.uint8)
+    return out_mask, None

@@ -80,7 +80,7 @@ def evaluate_dataset(dataset_path,year):
     print(pred_folders)
     for task in pred_folders:
         ground_truth_folder = f"{dataset_path}/Annotations/480p/{task}"
-        prediction_folder = f"{dataset_path}/results/{task}/mask_target1"
+        prediction_folder = f"{dataset_path}/results/{task}"
         
         if not os.path.exists(ground_truth_folder):
             print(f"Warning: Ground truth folder not found for task {task}")
