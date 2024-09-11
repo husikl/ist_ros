@@ -8,6 +8,10 @@ from utils.core_utils import build_control, init_interactive_segmentation, infer
 from configs.get_args import parse_args
 import tkinter as tk
 from queue import Queue
+from PIL import Image
+import matplotlib.pyplot as plt
+import numpy as np
+from PIL import Image, ImageShow
 class ResourceHandler:
     def __init__(
         self,
@@ -34,7 +38,12 @@ class ResourceHandler:
         self.lock = threading.Lock()
         print(f"Mask mode: {mask_mode}, Save all mode: {save_all_mode}")
 
-    def init_segmentation(self, image):
+    def init_segmentation(self, image, annotation_path):
+        if not os.path.exists(annotation_path):
+            raise FileNotFoundError(f"Annotation file not found: {annotation_path}")
+        annotation = Image.open(annotation_path)
+        ImageShow.show(annotation)        
+        
         with self.lock:
             self.interact_control.image_queue.put(image)
             init_interactive_segmentation(
@@ -93,17 +102,20 @@ class ResourceHandler:
         self.tk_root.destroy()
 
 if __name__ == "__main__":
+    # python davis_evaluator.py --davis_year 2016 --davis_task blackswan     
     # Assuming args is being parsed and appropriate paths are set
     args = parse_args()
     res_manager, interact_control = build_control(args)
 
     # Update these paths
-    input_folder = "/home/safetyu-desktop1/benchmarks_related/davis-2017/DAVIS/JPEGImages/480p/bear"
+    data_root = "/media/medical/Data/yamada/davis_evaluation"
+    input_folder = f"{data_root}/DAVIS_{args.davis_year}/JPEGImages/480p/{args.davis_task}"
     # output_folder = args.output_path  # Ensure this is set appropriately in your arguments
-    output_folder = "benchmark"
-
+    output_folder = f"{data_root}/DAVIS_{args.davis_year}/results/{args.davis_task}"
+    annotation_path = f"{data_root}/DAVIS_{args.davis_year}/Annotations/480p/{args.davis_task}/00000.png"
     os.makedirs(output_folder, exist_ok=True)
 
+    args.save_all_mode = True
     # Initialize an example image for segmentation initialization
     example_image_path = sorted([f for f in os.listdir(input_folder) if f.endswith('.jpg') or f.endswith('.png')])[0]
     example_image = cv2.imread(os.path.join(input_folder, example_image_path))
@@ -124,6 +136,6 @@ if __name__ == "__main__":
         save_all_path=args.save_all_path
     )
 
-    resource_handler.init_segmentation(example_image)
+    resource_handler.init_segmentation(example_image,annotation_path)
     resource_handler.process_images(input_folder, output_folder)
     tk_root.mainloop()

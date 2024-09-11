@@ -32,8 +32,8 @@ The folders to used are
 for Davis 2016, from val.txt:
 
 blackswan
-bmx-trees
-breakdance
+bmx-trees*sharin
+breakdance*boushi
 camel
 car-roundabout
 car-shadow
@@ -43,11 +43,11 @@ dog
 drift-chicane
 drift-straight
 goat
-horsejump-high
-kite-surf
+horsejump-high *
+kite-surf *
 libby
 motocross-jump
-paragliding-launch
+paragliding-launch *
 parkour
 scooter-black
 soapbox
@@ -55,29 +55,29 @@ soapbox
 for Davis 2017, from val.txt:
 bike-packing
 blackswan
-bmx-trees
-breakdance
+bmx-trees *sharin
+breakdance*boushi
 camel
 car-roundabout
 car-shadow
 cows
 dance-twirl
 dog
-dogs-jump
+dogs-jump *ashi
 drift-chicane
 drift-straight
 goat
-gold-fish
+gold-fish*order
 horsejump-high
 india
 judo
-kite-surf
+kite-surf *iregguler order
 lab-coat
 libby
 loading
 mbike-trick
-motocross-jump
-paragliding-launch
+motocross-jump ** miss
+paragliding-launch **head
 parkour
 pigs
 scooter-black

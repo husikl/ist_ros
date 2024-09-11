@@ -56,6 +56,9 @@ def parse_args():
                                   help='Radius of circle to attach to targets')
     visualization_group.add_argument('--save_all_mode', action='store_true')
     visualization_group.add_argument('--save_all_path', type=str, default='./outputs/data/out_test_video2')
+    davis_group = parser.add_argument_group('Davis evaluation')
+    davis_group.add_argument('--davis_task', type=str)
+    davis_group.add_argument('--davis_year', type=int)
     return parser.parse_args()
 
 def get_group_args(args, group_name):
