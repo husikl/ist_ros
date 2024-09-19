@@ -88,9 +88,9 @@ class ResourceHandler:
                             os.makedirs(f"{self.save_all_path}/mask_target{target_id}", exist_ok=True)
                     point_df = pd.DataFrame() # for point mode 
                     if self.mask_mode:
-                        os.makedirs(f"{self.save_all_path}/mask_all",exist_ok=True)
+                        os.makedirs(f"{self.save_all_path}/mask_target0",exist_ok=True)
                 if self.mask_mode:
-                    Image.fromarray(masks[0]).save(f"{self.save_all_path}/mask_all/mask_all_{frame_id:06}.jpg")
+                    Image.fromarray(masks[0]).save(f"{self.save_all_path}/mask_target0/mask_target0_{frame_id:06}.jpg")
                 frame_df = pd.DataFrame() # for point mode
                 frame_df["frame_id"] = [frame_id]
                 for target_id, (mask,center) in enumerate(zip(masks[1:], center_points),start=1):
