@@ -11,7 +11,7 @@ from segment_anything import SamPredictor, sam_model_registry
 from configs.get_args import get_group_args
 
 # ! load interaction control
-from control.interaction2 import interaction_control
+from control.interaction import interaction_control
 
 # ! load resource manager
 from control.res_manager import ResManager as resource_manager
@@ -87,7 +87,7 @@ def inference_masks(image, res_manager, debug=False, save_mode=False):
     masks = res_manager.step(mask=None)
     if save_mode is False:
         # Only convert to CPU and numpy array once
-        # Ignore the first image that include all masks
+        # Ignore the first image
         send_masks = masks[1:].cpu().numpy()
         masks_center_point = get_mask_center(send_masks)
         send_masks = (send_masks * 255).astype(np.uint8)

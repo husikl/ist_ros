@@ -64,6 +64,6 @@ SAM: Download the weights from https://github.com/facebookresearch/segment-anyth
 
 XMem: 
 ```
-wget -P ./weights/ https://github.com/hkchengrex/XMem/releases/download/v1.0/XMem.pth
-wget -P ./weights/ https://github.com/hkchengrex/XMem/releases/download/v1.0/XMem-s012.pth
+wget -P ./data/weights/ https://github.com/hkchengrex/XMem/releases/download/v1.0/XMem.pth
+wget -P ./data/weights/ https://github.com/hkchengrex/XMem/releases/download/v1.0/XMem-s012.pth
 ```

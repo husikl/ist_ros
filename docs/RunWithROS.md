@@ -10,7 +10,7 @@ roscore
 ## Object Detector Node
 Next, create a new terminal and run the following command to start the ROS node that will subscribe to the camera image topic:
 ```
-python segment_and_track_ros.py --input_topic /image_topic
+python src/segment_and_track_ros.py --input_topic /image_topic
 ```
 Please specify the ROS topic of the image in `--input_topic`. Additionally, you can use `--camera_param` to input a resized or cropped image to the model to speed up the process.
 
@@ -43,7 +43,7 @@ We provide two ways to visualize the results: masked images and images with poin
 
 Run the following command in a new terminal to start the ROS node that subscribes to the results from `segment_and_tracking_ros.py` and visualizes them:
 ```
-python visualizer.py
+python src/visualizer.py
 ```
 
 You can visualize the images in two ways by specifying command-line arguments:
@@ -54,7 +54,7 @@ You can visualize the images in two ways by specifying command-line arguments:
 
 For example, to run the visualizer with point mode enabled in addition to mask mode, use the following command:
 ```
-python visualizer.py --point_mode
+python src/visualizer.py --point_mode
 ```
 To view the visualized image, run the following command in another terminal:
 ```

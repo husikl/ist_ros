@@ -4,9 +4,9 @@ def parse_args():
     parser = argparse.ArgumentParser()
 
     # version without ROS
-    parser.add_argument('--input_path', type=str, default='./inputs/test_video2.mp4',
+    parser.add_argument('--input_path', type=str, default='./data/inputs/test_video2.mp4',
                         help='Path to the input video')
-    parser.add_argument('--output_path', type=str, default='./outputs/videos/out_test_video2.mp4',
+    parser.add_argument('--output_path', type=str, default='./data/outputs/videos/out_test_video2.mp4',
                         help='Path to the output video file')
     parser.add_argument('--mask_threshold', type=int, default=220,
                         help='Threshold value for applying the mask (0-255). Pixels with values greater than this threshold will be masked.')
@@ -20,11 +20,11 @@ def parse_args():
     sam_group.add_argument('--sam.encoder_type', type=str, default='vit_h',
                            choices=['vit_h', 'vit_l', 'vit_b'],
                            help='Encoder type for SAM model')
-    sam_group.add_argument('--sam.checkpoint', type=str, default='./weights/sam_vit_h_4b8939.pth',
+    sam_group.add_argument('--sam.checkpoint', type=str, default='./data/weights/sam_vit_h_4b8939.pth',
                            help='Path to the checkpoint file for SAM model')
 
     xmem_group = parser.add_argument_group('XMem Model Arguments')
-    xmem_group.add_argument('--xmem.checkpoint', type=str, default='./weights/XMem.pth',
+    xmem_group.add_argument('--xmem.checkpoint', type=str, default='./data/weights/XMem.pth',
                             help='Path to the checkpoint file for XMem model')
     xmem_group.add_argument('--xmem.buffer_size', type=int, default=50,
                             help='Correlate with CPU memory consumption')
@@ -55,7 +55,7 @@ def parse_args():
     visualization_group.add_argument('--center_radius',type=int,default=5,
                                   help='Radius of circle to attach to targets')
     visualization_group.add_argument('--save_all_mode', action='store_true')
-    visualization_group.add_argument('--save_all_path', type=str, default='./outputs/data/out_test_video2')
+    visualization_group.add_argument('--save_all_path', type=str, default='./data/outputs/data/out_test_video2')
     return parser.parse_args()
 
 def get_group_args(args, group_name):

@@ -105,12 +105,11 @@ class interaction_control:
             self.label_button.config(text="Background", bg="red", fg="white",
                                     activebackground="darkred", activeforeground="white")
 
-    def predict_by_boxes(self):
+    def predict_by_prompts(self):
         image_np = np.array(self.image)
         self.sam.set_image(image_np)
         anchors_np = self.safe_np_array(self.anchors)
         anchors_label_np = self.safe_np_array(self.anchors_label)
-        print(anchors_np, anchors_label_np, self.boxes)
         mask, _, _ = self.sam.predict(
             point_coords=anchors_np,
             point_labels=anchors_label_np,
@@ -130,7 +129,7 @@ class interaction_control:
         return x_np
     
     def predict_mask(self):
-        mask, mask_image = self.predict_by_boxes()
+        mask, mask_image = self.predict_by_prompts()
         self.masks.append(mask)
         self.masks_array.append(mask_image)
         # Display the masked image
@@ -166,7 +165,7 @@ class interaction_control:
         self.anchors_label = []
 
         # Reset sam
-        self.num_masks = 0
+        self.num_masks = 1
         self.masks_array = []
         self.masks = []
         self.mask_photo = None
@@ -194,12 +193,11 @@ class interaction_control:
             self.anchors_label = []
         else:
             # Remove latest output
-            print(self.num_masks, len(self.masks_array), len(self.masks))
             # Display previous version
             if len(self.masks_array) > 0:
-                self.num_masks -= 1
                 self.masks_array.pop(-1)
                 self.masks.pop(-1)
+                self.num_masks -= 1
                 if len(self.masks_array) == 0:
                     self.mask_photo = self.photo
                 else:                
@@ -210,7 +208,8 @@ class interaction_control:
             else:
                 # All mask cleared
                 self.mask_photo = self.photo
-            self.image_id = self.canvas.create_image(0, 0, anchor=tk.NW, image=self.mask_photo)        
+            self.image_id = self.canvas.create_image(0, 0, anchor=tk.NW, image=self.mask_photo)
+        print("Removed")        
         self.canvas.update()
         
     def tracking(self):
@@ -314,11 +313,8 @@ class interaction_control:
                 start_inference()
             except rospy.ServiceException as e:
                 print("Service call failed: %s"%e)
-        for i, maskk in enumerate(self.masks):
-            print(i, maskk.size())
 
         return_masks = torch.stack(self.masks, dim=0)
         return_masks = return_masks.to(self.sam.device)
-        print(return_masks.size())
         print("Start tracking")
         return return_masks
