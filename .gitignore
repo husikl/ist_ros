@@ -2,11 +2,11 @@
 __pycache__/
 *.py[cod]
 *$py.class
-*.mp4
-!assets/*.mp4
+# *.mp4
+# !assets/*.mp4
 tracking_notes.md
-inputs/
-outputs/
+# inputs/
+# outputs/
 .vscode/
 mp4publisher.py
 # C extensions
@@ -165,5 +165,5 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-data/
+data/weights
 

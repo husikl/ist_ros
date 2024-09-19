@@ -4,7 +4,7 @@ This document provides a guide on using IST_ROS for video annotations and data c
 ## Basic example
 To perform video annotation, run the following command:
 ```
-python segment_and_track.py --input_path ./data/inputs/input_video.mp4 --output_path ./data/outputs/videos/output_video.mp4
+python src/segment_and_track.py --input_path ./data/inputs/input_video.mp4 --output_path ./data/outputs/videos/output_video.mp4
 ```
 ## Arguments
 * `--input_path`: Path to the input video.
