@@ -13,7 +13,7 @@ def parse_args():
     # version with ROS
     parser.add_argument('--input_topic', type=str, default='/ximea_cam/image_raw',
                         help='Topic name to subscribe to')
-    parser.add_argument('--camera_param', type=str, default='./configs/camera_env.yaml',
+    parser.add_argument('--camera_param', type=str, default='./src/configs/camera_env.yaml',
                         help='Path to yaml file to specify resize scale and crop parameters')
 
     sam_group = parser.add_argument_group('SAM Model Arguments')
