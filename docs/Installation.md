@@ -58,11 +58,21 @@ Install the Segment Anything Model:
 ```
 pip install git+https://github.com/facebookresearch/segment-anything.git
 ```
-Install the weights for SAM and XMem:
 
-SAM: Download the weights from https://github.com/facebookresearch/segment-anything and place them in the appropriate directory.
+Environment setting is completed. Install IST_ROS:
+```
+git clone https://github.com/husikl/ist_ros.git
+cd ist_ros
+mkdir -p data/weights
+```
 
-XMem: 
+Install the weights for SAM and XMem
+1. SAM:
+```
+wget -P ./data/weights/ https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
+```
+
+2. XMem: 
 ```
 wget -P ./data/weights/ https://github.com/hkchengrex/XMem/releases/download/v1.0/XMem.pth
 wget -P ./data/weights/ https://github.com/hkchengrex/XMem/releases/download/v1.0/XMem-s012.pth
