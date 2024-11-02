@@ -43,7 +43,7 @@ We provide two ways to visualize the results: masked images and images with poin
 
 Run the following command in a new terminal to start the ROS node that subscribes to the results from `segment_and_tracking_ros.py` and visualizes them:
 ```
-python src/visualizer.py
+python src/visualizer.py --input_topic /image_topic
 ```
 
 You can visualize the images in two ways by specifying command-line arguments:
