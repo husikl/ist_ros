@@ -48,6 +48,20 @@ IST-ROS can be used with or without ROS. For examples on how to run IST-ROS, ple
 ## Related publications
 
 ```bibtex
+@Article{fozilov2025istros,
+title = {IST-ROS: A flexible object segmentation and tracking framework for robotics applications},
+journal = {SoftwareX},
+volume = {29},
+pages = {101979},
+year = {2025},
+issn = {2352-7110},
+doi = {https://doi.org/10.1016/j.softx.2024.101979},
+url = {https://www.sciencedirect.com/science/article/pii/S2352711024003492},
+author = {Khusniddin Fozilov and Yutaro Yamada and Jacinto Colan and Yaonan Zhu and Yasuhisa Hasegawa},
+keywords = {Real-time object detection, Video object segmentation, Robot operating system (ROS)},
+abstract = {Object detection and tracking are crucial components in the development of various applications and research endeavors within the computer science and robotics community. However, the diverse shapes and appearances of real-world objects, as well as dynamic nature of the scenes, may pose significant challenges for these tasks. Existing object detection and tracking methods often require extensive data annotation and model re-training when applied to new objects or environments, diverting valuable time and resources from the primary research objectives. In this paper, we present IST-ROS, Interactive Segmentation and Tracking for ROS, a software solution that leverages the capabilities of the Segment Anything Model (SAM) and semi-supervised video object segmentation methods to enable flexible and efficient object segmentation and tracking. Its graphical interface allows interactive object selection and segmentation using various prompts, while integrated tracking ensures robust performance even under occlusions and object interactions. By providing a flexible solution for object segmentation and tracking, IST-ROS aims to facilitate rapid prototyping and advancement of robotics applications.}
+}
+
 @Article{s23249865,
   AUTHOR = {Fozilov, Khusniddin and Colan, Jacinto and Davila, Ana and Misawa, Kazunari and Qiu, Jie and Hayashi, Yuichiro and Mori, Kensaku and Hasegawa, Yasuhisa},
   TITLE = {Endoscope Automation Framework with Hierarchical Control and Interactive Perception for Multi-Tool Tracking in Minimally Invasive Surgery},
